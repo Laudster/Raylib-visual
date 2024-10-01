@@ -13,6 +13,8 @@ html, body
     margin-top: 3%;
     width: 7%;
     height: 40%;
+    padding-left: 0.3%;
+    padding-right: 0.5%;
     padding-bottom: 20%;
     background-color: rgb(230, 230, 230);
 }
@@ -66,7 +68,7 @@ html, body
     height: 40%;
 }
 
-#rooms
+#config
 {
     background-color: rgb(240, 240, 240);
     position: absolute;
@@ -74,4 +76,20 @@ html, body
     left: 70%;
     width: 30%;
     height: 40%;
+}
+
+#build
+{
+    position: absolute;
+    left: 71%;
+    top: 50%;
+    font-size: 200%;
+    border-radius: 4px;
+    transition: 0.5s;
+}
+
+#build:hover
+{
+    background-color: rgb(27, 240, 27, 0.7);
+    cursor: pointer;
 }
