@@ -1,6 +1,9 @@
 html, body
 {
     height: 100%;
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
 }
 
 #container {
@@ -47,7 +50,7 @@ html, body
 
 #coding button
 {
-    width: 100%;
+    width: 55%;
     margin-bottom: 5%;
     padding: 3%;
     border-radius: 5px;
@@ -56,6 +59,21 @@ html, body
 #coding button:hover
 {
     cursor: pointer;
+}
+
+input
+{
+    width: 20%;
+}
+
+input[type="number"]
+{
+    width: 5%;
+}
+
+input[type="color"]
+{
+    width: 10%;
 }
 
 #display
@@ -92,4 +110,72 @@ html, body
 {
     background-color: rgb(27, 240, 27, 0.7);
     cursor: pointer;
+}
+
+#codeblocks
+{
+    position: absolute;
+    top: 6.5%;
+    left: 31%;
+    width: 50%;
+}
+
+#open
+{
+    display: none;
+    background-image: linear-gradient(rgb(66, 135, 245), rgb(165, 191, 232));
+    position: absolute;
+    left: 76%;
+    top: 50%;
+    font-size: 200%;
+    border-radius: 4px;
+    transition: 0.5s;
+}
+
+#open:hover
+{
+    cursor: pointer;
+}
+
+ul
+{
+    padding-left: 0px;
+    list-style-type: none;
+}
+
+li
+{
+    margin-bottom: 10%;
+}
+
+#codeblocks li
+{
+    margin-bottom: 5%;
+}
+
+#codeblocks input
+{
+    width: 4%;
+}
+
+#codeblocks button:hover
+{
+    cursor: not-allowed;
+}
+
+
+
+li button{
+    width: 40%;
+    padding: 1%;
+    border-radius: 5px;
+}
+
+.codeheader
+{
+    font-family: Arial;
+    font-weight: lighter;
+    background-color: rgba(0, 0, 0, 0.1);
+    width: 25%;
+    padding-left: 1%;
 }

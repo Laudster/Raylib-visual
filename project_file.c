@@ -18,10 +18,13 @@ int main()
     InitWindow(1920, 1080, title);
     SetTargetFPS(FPS);
 
+    //Input
+
+    //Update
+
     while (!WindowShouldClose())
     {
         BeginDrawing();
-            ClearBackground(defaultColour);
         EndDrawing();
     }
     
