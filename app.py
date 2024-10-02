@@ -13,32 +13,38 @@ socket = SocketIO(app)
 def start():
     return render_template("index.html")
 
-def processCode(codeblock):
-    if "Clear Background" in codeblock:
-        color = codeblock.split(":")[1].split(" ")[1]
-        c_code = f"ClearBackground(GetColor(0x{color[1:len(color)]}ff));"
+def processCode(codeblocks):
+    
+    render = codeblocks.get("render")
+    renderCode = ""
 
-        with open("outline.c", "r") as file:
-            projectCode = file.read()
-
-            projectCode = projectCode.replace("BeginDrawing();", "BeginDrawing();\n\t\t\t" + c_code)
+    for codeblock in render:
+        if "Clear Background" in codeblock:
+            color = codeblock.split(":")[1].split(" ")[1]
+            renderCode += f"\n\t\t\tClearBackground(GetColor(0x{color[1:len(color) - 1]}ff));"
         
-        with open("project_file.c", "w") as file:
-            file.write(projectCode)
+        if "Draw Rectangle" in codeblock:
+            #Draw Rectangle: 0 0 0 0 #000000
+            splits = codeblock.split(": ")[1].split(";")
+            renderCode += f"\n\t\t\tDrawRectangle({splits[0]}, {splits[1]}, {splits[2]}, {splits[3]}, GetColor(0x{splits[4][1:len(splits[4])]}ff));"
+        
+        if "Draw Text" in codeblock:
+            #Draw Text: 0 0 0 0 #000000 
+            splits = codeblock.split(": ")[1].split(";")
+            renderCode += f"\n\t\t\tDrawText(\"{splits[0]}\", {splits[1]}, {splits[2]}, {splits[3]}, GetColor(0x{splits[4][1:len(splits[4])]}ff));"
+
+    with open("outline.c", "r") as file:
+        projectCode = file.read()
+
+        projectCode = projectCode.replace("BeginDrawing();", "BeginDrawing();\n\t\t\t" + renderCode)
+            
+    with open("project_file.c", "w") as file:
+        file.write(projectCode)
         
 
 @socket.on("build")
 def build(code):
-    render = code.get("render")
-
-    if len(render) > 0:
-        processCode(render[0])
-    else:
-        with open("outline.c", "r") as file:
-            projectCode = file.read()
-        
-        with open("project_file.c", "w") as file:
-            file.write(projectCode)
+    processCode(code)
 
 
     for file in os.listdir("web-build"):

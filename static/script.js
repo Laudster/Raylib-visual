@@ -11,7 +11,7 @@ socket.on("disconnect", function(){
 let projectLink = "";
 
 const codeblocks = {
-    "Render": ["Clear Background: (color)", "Draw Rectangle: (number) (number) (number) (number) (color)", "Draw Text: (text) (vector2) (color)"],
+    "Render": ["Clear Background: (color)", "Draw Rectangle: (number) (number) (number) (number) (color)", "Draw Text: (text) (number) (number) (number) (color)"],
     "Input": ["IsKeyDown: (keycode)", "IsMouseDown: (mousebutton)"],
     "Logic": ["If: (statement)", "Else", "Else If: (statement)"],
     "Loops": ["For: (statement)", "While: (statement)"],
@@ -23,24 +23,24 @@ let variables = {"defaultColour": [255, 255, 255, 255], "FPS": 60, "title": "Gam
 function processCodeblocks()
 {
     let input = [];
-    for (const block of document.getElementById("render").children){
+    for (const block of document.getElementById("input").children){
 
         let line = "";
         for (const child of block.children){
             if (child.textContent) line += child.textContent;
-            if (child.value) line += child.value;
+            if (child.value) line += child.value + ";";
         }
 
         input.push(line);
     }
 
     let update = [];
-    for (const block of document.getElementById("render").children){
+    for (const block of document.getElementById("update").children){
 
         let line = "";
         for (const child of block.children){
             if (child.textContent) line += child.textContent;
-            if (child.value) line += child.value;
+            if (child.value) line += child.value + ";";
         }
 
         update.push(line);
@@ -52,7 +52,7 @@ function processCodeblocks()
         let line = "";
         for (const child of block.children){
             if (child.textContent) line += child.textContent;
-            if (child.value) line += child.value;
+            if (child.value) line += child.value + ";";
         }
 
         render.push(line);
@@ -99,6 +99,7 @@ function update_panel(inner)
                             if (i == 0){
                                 let number = document.createElement("input");
                                 number.type = "number";
+                                number.value = 0;
 
                                 li.appendChild(number);
                             } else addons.push("number");
@@ -110,6 +111,14 @@ function update_panel(inner)
 
                                 li.appendChild(statement);
                             } else addons.push("statement");
+                        } else if (word == "(text)"){
+                            if (i == 0){
+                                let text = document.createElement("input");
+                                text.type = "text";
+                                text.placeholder = "text"
+
+                                li.appendChild(text);
+                            } else addons.push("text");
                         } else if (word == "(variable)"){
                             if (i == 0){
                                 let variable = document.createElement("input");
@@ -144,13 +153,16 @@ function update_panel(inner)
         
         let button = document.createElement("button");
         button.innerHTML = message;
-        button.onclick = (event) => {
-            const copy = li.cloneNode(true);
-            const copyButton = copy.querySelector('button');
-
-            copyButton.onclick = () => copy.remove();
-            document.getElementById(li.name).appendChild(copy);
-        };
+        
+        if (inner == "Render"){
+            button.onclick = (event) => {
+                const copy = li.cloneNode(true);
+                const copyButton = copy.querySelector('button');
+    
+                copyButton.onclick = () => copy.remove();
+                document.getElementById(li.name).appendChild(copy);
+            };
+        }
 
         li.appendChild(button);
 
@@ -163,6 +175,7 @@ function update_panel(inner)
             } else if (addon == "number"){
                 let number = document.createElement("input");
                 number.type = "number";
+                number.value = 0;
 
                 li.appendChild(number);
             } else if (addon == "statement"){
@@ -171,6 +184,12 @@ function update_panel(inner)
                 statement.placeholder = "statement";
 
                 li.appendChild(statement);
+            } else if (addon == "text"){
+                let text = document.createElement("input");
+                text.type = "text";
+                text.placeholder = "text";
+
+                li.appendChild(text);
             } else if (addon == "variable"){
                 let variable = document.createElement("input");
                 variable.type = "text";

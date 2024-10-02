@@ -25,6 +25,10 @@ int main()
     while (!WindowShouldClose())
     {
         BeginDrawing();
+			
+			ClearBackground(GetColor(0x1f1e1eff));
+			DrawRectangle(860, 480, 100, 60, GetColor(0xffffffff));
+			DrawText("test", 865, 490, 40, GetColor(0xcd3737ff));
         EndDrawing();
     }
     

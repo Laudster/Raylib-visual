@@ -68,10 +68,20 @@ input
 
 input[type="number"]
 {
-    width: 5%;
+    width: 6%;
 }
 
-input[type="color"]
+input[placeholder="text"]
+{
+    width: 7%;
+}
+
+#coding input[type="color"]
+{
+    width: 10%;
+}
+
+#codeblocks input[placeholder="text"]
 {
     width: 10%;
 }
