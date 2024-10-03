@@ -15,7 +15,7 @@ let codeSection = "";
 let variableSelelect = "";
 
 const codeblocks = {
-    "Render": ["Clear Background: (color)", "Draw Rectangle: (number) (number) (number) (number) (color)", "Draw Text: (text) (number) (number) (number) (color)"],
+    "Render": ["Draw Rectangle: (number) (number) (number) (number) (color)", "Draw Text: (text) (number) (number) (number) (color)"],
     "Input": ["IsKeyDown: (keycode)", "IsMouseDown: (mousebutton)"],
     "Logic": ["If: (statement)", "Else", "Else If: (statement)"],
     "Loops": ["For: (statement)", "While: (statement)"],
@@ -73,17 +73,17 @@ function processCodeblocks()
 
         let line = "";
         for (const child of block.children){
-            if (child.textContent && child.tagName != "SELECT" && !variables[child.textContent]) line += child.textContent;
-            if (variables[child.textContent]){
-                if (typeof(variables[child.textContent]) == "string"){
-                    line += "\"" + variables[child.textContent] + "\"" + ";";
-                } else line += variables[child.textContent] += ";";
+            if (child.textContent && child.tagName != "SELECT")
+            {
+                if (child.textContent in variables)
+                {
+                    line += child.textContent + ";";
+                } else
+                {
+                    line += child.textContent; console.log(child.textContent in variables);
+                }
             }
-            if (child.value){
-                if (child.tagName == "INPUT"){
-                    if (child.type == "text") line += "\"" + child.value + "\";"; else line += child.value += ";";
-                } else line += child.value += ";";
-            }
+            if (child.value) line += child.value + ";";
         }
 
         setup.push(line);
@@ -118,18 +118,17 @@ function processCodeblocks()
 
         let line = "";
         for (const child of block.children){
-            if (child.textContent && child.tagName != "SELECT" && !variables[child.textContent]) line += child.textContent;
-            if (variables[child.textContent]){
-                console.log("variable");
-                if (typeof(variables[child.textContent]) == "string"){
-                    line += "\"" + variables[child.textContent] + "\"" + ";";
-                } else line += variables[child.textContent] += ";";
+            if (child.textContent && child.tagName != "SELECT")
+            {
+                if (child.textContent in variables)
+                {
+                    line += child.textContent + ";";
+                } else
+                {
+                    line += child.textContent; console.log(child.textContent in variables);
+                }
             }
-            if (child.value){
-                if (child.tagName == "INPUT"){
-                    if (child.type == "text") line += "\"" + child.value + "\";"; else line += child.value += ";";
-                } else line += child.value += ";";
-            }
+            if (child.value) line += child.value + ";";
         }
 
         render.push(line);

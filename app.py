@@ -17,6 +17,8 @@ def processCode(codeblocks):
     
     setup = codeblocks.get("setup")
     setupCode = ""
+
+    print(codeblocks)
      
     for codeblock in setup:
         if "Set variable" in codeblock:
@@ -34,11 +36,11 @@ def processCode(codeblocks):
             if splits[0].replace(" ", "") == "text":
                 name = splits[1].replace(" ", "")
                 value = splits[2]
-                setupCode += f"\n\tchar {name[1:len(name)-1]}[20] = {value};"
+                setupCode += f"\n\tchar {name}[20] = \"{value}\";"
             elif splits[0].replace(" ", "") == "number":
                 name = splits[1].replace(" ", "")
                 value = splits[2]
-                setupCode += f"\n\tint {name[1:len(name)-1]} = {value[1:len(value)-1]};"
+                setupCode += f"\n\tint {name} = {value};"
             else:
                 print(splits[0].replace(" ", ""))
 
@@ -60,7 +62,7 @@ def processCode(codeblocks):
         if "Draw Text" in codeblock:
             #Draw Text: 0 0 0 0 #000000 
             splits = codeblock.split(": ")[1].split(";")
-            renderCode += f"\n\t\t\tDrawText(\"{splits[0]}\", {splits[1]}, {splits[2]}, {splits[3]}, GetColor(0x{splits[4][1:len(splits[4])]}ff));"
+            renderCode += f"\n\t\t\tDrawText({splits[0]}, {splits[1]}, {splits[2]}, {splits[3]}, GetColor(0x{splits[4][1:len(splits[4])]}ff));"
 
     with open("outline.c", "r") as file:
         projectCode = file.read()

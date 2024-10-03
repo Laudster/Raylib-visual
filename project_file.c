@@ -16,7 +16,7 @@ char title[20] = "Game";
 int main()
 {
     //Setup
-	strcpy(title, "Application");
+	char color[20] = "#73299e";
 
 
     SetTraceLogLevel(LOG_ERROR);
@@ -31,6 +31,7 @@ int main()
     {
         BeginDrawing();
 			
+            ClearBackground(defaultColour);
         EndDrawing();
     }
     

@@ -29,6 +29,7 @@ int main()
     while (!WindowShouldClose())
     {
         BeginDrawing();
+            ClearBackground(defaultColour);
         EndDrawing();
     }
     
