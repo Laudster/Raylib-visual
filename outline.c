@@ -1,5 +1,6 @@
 #include "raylib.h"
 #include <stdlib.h>
+#include <string.h>
 
 /*
 Command:
@@ -14,6 +15,9 @@ char title[20] = "Game";
 
 int main()
 {
+    //Setup
+
+
     SetTraceLogLevel(LOG_ERROR);
     InitWindow(1920, 1080, title);
     SetTargetFPS(FPS);

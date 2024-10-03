@@ -48,13 +48,23 @@ html, body
     background-color: rgb(240, 240, 240, 0.7);
 }
 
-#coding button
+#coding li button
 {
-    width: 55%;
+    width: 50%;
     margin-bottom: 5%;
     padding: 3%;
     border-radius: 5px;
 }
+
+#coding li button.short
+{
+    width: 10%;
+    margin-bottom: 5%;
+    padding: 1%;
+    border-radius: 5px;
+}
+
+#coding button{margin-bottom: 15%;}
 
 #coding button:hover
 {
@@ -173,19 +183,17 @@ li
     cursor: not-allowed;
 }
 
-
-
-li button{
-    width: 40%;
-    padding: 1%;
-    border-radius: 5px;
+#codeblocks button.codeheader:hover
+{
+    cursor: pointer;
 }
 
 .codeheader
 {
     font-family: Arial;
-    font-weight: lighter;
+    font-size: 200%;
     background-color: rgba(0, 0, 0, 0.1);
     width: 25%;
     padding-left: 1%;
+    margin-bottom: 4%;
 }

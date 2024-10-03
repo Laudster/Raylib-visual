@@ -1,5 +1,6 @@
 #include "raylib.h"
 #include <stdlib.h>
+#include <string.h>
 
 /*
 Command:
@@ -14,6 +15,10 @@ char title[20] = "Game";
 
 int main()
 {
+    //Setup
+	strcpy(title, "Application");
+
+
     SetTraceLogLevel(LOG_ERROR);
     InitWindow(1920, 1080, title);
     SetTargetFPS(FPS);
@@ -26,9 +31,6 @@ int main()
     {
         BeginDrawing();
 			
-			ClearBackground(GetColor(0x1f1e1eff));
-			DrawRectangle(860, 480, 100, 60, GetColor(0xffffffff));
-			DrawText("test", 865, 490, 40, GetColor(0xcd3737ff));
         EndDrawing();
     }
     

@@ -15,8 +15,37 @@ def start():
 
 def processCode(codeblocks):
     
+    setup = codeblocks.get("setup")
+    setupCode = ""
+     
+    for codeblock in setup:
+        if "Set variable" in codeblock:
+            splits = codeblock.split(":")[1].split(";")
+            if '"' in splits[1]:
+                name = splits[0].replace(" ", "")
+                setupCode += f"\n\tstrcpy({name}, {splits[1]});"
+            else:
+                print(f"\n\t{splits[0]} = {splits[1]};")
+        
+        if "Create variable" in codeblock:
+            #Create variable: text;"test";"test text";
+            splits = codeblock.split(":")[1].split(";")
+
+            if splits[0].replace(" ", "") == "text":
+                name = splits[1].replace(" ", "")
+                value = splits[2]
+                setupCode += f"\n\tchar {name[1:len(name)-1]}[20] = {value};"
+            elif splits[0].replace(" ", "") == "number":
+                name = splits[1].replace(" ", "")
+                value = splits[2]
+                setupCode += f"\n\tint {name[1:len(name)-1]} = {value[1:len(value)-1]};"
+            else:
+                print(splits[0].replace(" ", ""))
+
     render = codeblocks.get("render")
     renderCode = ""
+
+    print(render)
 
     for codeblock in render:
         if "Clear Background" in codeblock:
@@ -36,6 +65,7 @@ def processCode(codeblocks):
     with open("outline.c", "r") as file:
         projectCode = file.read()
 
+        projectCode = projectCode.replace("//Setup", "//Setup" + setupCode)
         projectCode = projectCode.replace("BeginDrawing();", "BeginDrawing();\n\t\t\t" + renderCode)
             
     with open("project_file.c", "w") as file:

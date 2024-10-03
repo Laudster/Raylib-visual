@@ -10,18 +10,85 @@ socket.on("disconnect", function(){
 
 let projectLink = "";
 
+let codeSection = "";
+
+let variableSelelect = "";
+
 const codeblocks = {
     "Render": ["Clear Background: (color)", "Draw Rectangle: (number) (number) (number) (number) (color)", "Draw Text: (text) (number) (number) (number) (color)"],
     "Input": ["IsKeyDown: (keycode)", "IsMouseDown: (mousebutton)"],
     "Logic": ["If: (statement)", "Else", "Else If: (statement)"],
     "Loops": ["For: (statement)", "While: (statement)"],
-    "Math": ["(number) + (number)", "(number) - (number)"],
-    "Variables": ["Create variable (variable) (assignvalue)", "Set variable (thevariable) (number)", "(thevariable) Increase by (number)"]}
+    "Math": ["(number) + (number)", "(number) - (number)", "(number) * (number)", "(number) : (number)"],
+    "Variables": ["Create variable: (assignvalue) (variable)", "Set variable: (thevariable) (value)"]}
 
-let variables = {"defaultColour": [255, 255, 255, 255], "FPS": 60, "title": "Game"};
+let variables = {"defaultColour": "0x000000ff", "FPS": 60, "title": "Game"};
+
+function mouse_entered_input(event)
+{
+    if (event.target.style.borderColor == "blue"){
+        let variablebutton = document.createElement("button");
+        variablebutton.textContent = variableSelelect;
+
+        event.target.parentElement.insertBefore(variablebutton, event.target);
+
+        event.target.remove();
+    
+        ["setup", "update", "input", "render"].forEach(stupid => {
+            for (const block of document.getElementById(stupid).children){
+                for (const element of block.children){
+                    if (element.tagName == "INPUT") element.style.borderColor = "";
+                }
+            }
+        })
+    }
+}
+ 
+
+function chosen_section(button)
+{
+    if (codeSection == button.textContent.charAt(1).toLowerCase() + button.textContent.slice(2).replace(" ", ""))
+    {
+        ["Setup", "Input", "Update", "Render"].forEach(id => {
+            document.getElementById(id).querySelector("button").style.backgroundColor = "";
+        });
+
+        codeSection = "";
+    } else
+    {
+        codeSection = button.textContent.charAt(1).toLowerCase() + button.textContent.slice(2).replace(" ", "");
+
+        ["Setup", "Input", "Update", "Render"].forEach(id => {
+            document.getElementById(id).querySelector("button").style.backgroundColor = "";
+        });
+
+        button.style.backgroundColor = "rgb(200, 200, 200)";
+    }
+}
 
 function processCodeblocks()
 {
+    let setup = [];
+    for (const block of document.getElementById("setup").children){
+
+        let line = "";
+        for (const child of block.children){
+            if (child.textContent && child.tagName != "SELECT" && !variables[child.textContent]) line += child.textContent;
+            if (variables[child.textContent]){
+                if (typeof(variables[child.textContent]) == "string"){
+                    line += "\"" + variables[child.textContent] + "\"" + ";";
+                } else line += variables[child.textContent] += ";";
+            }
+            if (child.value){
+                if (child.tagName == "INPUT"){
+                    if (child.type == "text") line += "\"" + child.value + "\";"; else line += child.value += ";";
+                } else line += child.value += ";";
+            }
+        }
+
+        setup.push(line);
+    }
+
     let input = [];
     for (const block of document.getElementById("input").children){
 
@@ -51,14 +118,91 @@ function processCodeblocks()
 
         let line = "";
         for (const child of block.children){
-            if (child.textContent) line += child.textContent;
-            if (child.value) line += child.value + ";";
+            if (child.textContent && child.tagName != "SELECT" && !variables[child.textContent]) line += child.textContent;
+            if (variables[child.textContent]){
+                console.log("variable");
+                if (typeof(variables[child.textContent]) == "string"){
+                    line += "\"" + variables[child.textContent] + "\"" + ";";
+                } else line += variables[child.textContent] += ";";
+            }
+            if (child.value){
+                if (child.tagName == "INPUT"){
+                    if (child.type == "text") line += "\"" + child.value + "\";"; else line += child.value += ";";
+                } else line += child.value += ";";
+            }
         }
 
         render.push(line);
     }
 
-    return {"input": input, "update": update, "render": render};
+    return {"setup": setup, "input": input, "update": update, "render": render};
+}
+
+function add_variable_type(event)
+{
+    const newType = event.target.value;
+
+
+    if (newType == "text")
+    {
+        let newInput = document.createElement("input");
+        newInput.type = "text";
+        newInput.placeholder = "text";
+        newInput.addEventListener("mouseup", (event) => mouse_entered_input(event));
+
+
+        event.target.parentElement.appendChild(newInput);
+    }
+
+    if (newType == "number")
+    {
+        let newInput = document.createElement("input");
+        newInput.type = "number";
+        newInput.value = 0;
+        newInput.addEventListener("mouseup", (event) => mouse_entered_input(event));
+    
+        event.target.parentElement.appendChild(newInput);
+    }
+}
+
+function add_variable(event)
+{
+    if (event.target.parentElement.querySelector("select").value == "text")
+    {
+        variables[event.target.value] = "";
+        update_panel("Variables");
+    } else if (event.target.parentElement.querySelector("select").value == "number")
+    {
+        variables[event.target.value] = 0;
+        update_panel("Variables");
+    }
+}
+
+function chosen_set_variable(event)
+{
+
+    if (event.target.parentElement.querySelector("input")) event.target.parentElement.querySelector("input").remove();
+
+    if (event.target.value != "variable")
+    {
+        if (typeof(variables[event.target.value]) == "string")
+        {
+            let variableInput = document.createElement("input");
+            variableInput.type = "text";
+            variableInput.placeholder = "text";
+            variableInput.onmouseup = (event) => mouse_entered_input(event);
+            
+            event.target.parentElement.appendChild(variableInput);
+        } else if (typeof(variables[event.target.value]) == "number")
+        {
+            let variableInput = document.createElement("input");
+            variableInput.type = "number";
+            variableInput.value = 0;
+            variableInput.onmouseup = (event) => mouse_entered_input(event);
+                
+            event.target.parentElement.appendChild(variableInput);
+        }
+    }
 }
 
 function update_panel(inner)
@@ -71,6 +215,46 @@ function update_panel(inner)
     newTitle.innerHTML = inner;
     document.getElementById("coding").appendChild(newTitle);
 
+    if (inner == "Variables")
+    {
+        Object.keys(variables).forEach(variable =>{
+            let button = document.createElement("button");
+            button.innerHTML = variable;
+            button.style.display = "inline";
+
+            button.onmousedown = () =>{
+                variableSelelect = button.textContent;
+                for (const block of document.getElementById("setup").children){
+                    for (const element of block.children){
+                        if (element.tagName == "INPUT") element.style.borderColor = "blue";
+                    }
+                }
+
+                for (const block of document.getElementById("render").children){
+                    for (const element of block.children){
+                        if (element.tagName == "INPUT") element.style.borderColor = "blue";
+                    }
+                }
+            }
+
+            button.onmouseup = () =>{
+                variableSelelect = "";
+                for (const block of document.getElementById("setup").children){
+                    for (const element of block.children){
+                        if (element.tagName == "INPUT") element.style.borderColor = "";
+                    }
+                }
+
+                for (const block of document.getElementById("render").children){
+                    for (const element of block.children){
+                        if (element.tagName == "INPUT") element.style.borderColor = "";
+                    }
+                }
+            }
+
+            document.getElementById("coding").appendChild(button);
+        });
+    }
 
     codeblocks[inner].forEach(codeblock => {
         let ul = document.createElement("ul");
@@ -123,11 +307,11 @@ function update_panel(inner)
                             if (i == 0){
                                 let variable = document.createElement("input");
                                 variable.type = "text";
-                                variable.placeholder = "variable"
+                                variable.placeholder = "name"
 
                                 li.appendChild(variable);
                             } else addons.push("variable");
-                        } else if (word == "(keycode)" || word == "(mousebutton)" || word == "(thevariable)"){
+                        } else if (word == "(keycode)" || word == "(mousebutton)"){
                             if (i == 0){
                                 let selector = document.createElement("select")
                                 selector.name = "options";
@@ -144,6 +328,44 @@ function update_panel(inner)
 
                                 li.appendChild(selector);
                             } else addons.push("option")
+                        } else if (word == "(thevariable)"){
+                            if (i == 0){
+                                let thevariable = document.createElement("select");
+                                thevariable.name = "variable";;
+
+                                let defaultOpt = document.createElement("option");
+                                defaultOpt.value = "variable";
+                                defaultOpt.textContent = "variable";
+                                thevariable.appendChild(defaultOpt);
+
+                                Object.keys(variables).forEach(variable => {
+                                    let option = document.createElement("option");
+                                    option.value = variable;
+                                    option.textContent = variable;
+                                    thevariable.appendChild(option);
+                                })
+
+                                li.appendChild(thevariable);
+                            } else addons.push("thevariable");
+                        } else if (word == "(assignvalue)"){
+                            if (i == 0){
+                                let variablevalue = document.createElement("select");
+                                variablevalue.name = "value";
+
+                                let defaultOpt = document.createElement("option");
+                                defaultOpt.value = "value";
+                                defaultOpt.textContent = "value";
+                                variablevalue.appendChild(defaultOpt);
+
+                                ["text", "number"].forEach(valuetype => {
+                                    let option = document.createElement("option");
+                                    option.value = valuetype;
+                                    option.textContent = valuetype;
+                                    variablevalue.appendChild(option);
+                                })
+
+                                li.appendChild(variablevalue);
+                            } else addons.push("variablevalue");
                         }
                     } else
                     {
@@ -153,14 +375,57 @@ function update_panel(inner)
         
         let button = document.createElement("button");
         button.innerHTML = message;
+
+        if (inner == "Math") button.className = "short";
         
         if (inner == "Render"){
             button.onclick = (event) => {
                 const copy = li.cloneNode(true);
-                const copyButton = copy.querySelector('button');
     
-                copyButton.onclick = () => copy.remove();
+                for (const c of copy.children)
+                {
+                    if (c.tagName == "INPUT"){
+                        c.addEventListener("mouseup", (event) => mouse_entered_input(event));
+                    }
+                }
+
+                copy.querySelector('button').onclick = () => copy.remove();
                 document.getElementById(li.name).appendChild(copy);
+            };
+        }
+
+        if (addons.includes("variable")){
+            button.onclick = () => {
+                const copy = li.cloneNode(true);
+
+                for (const c of copy.children)
+                {
+                    if (c.tagName == "INPUT"){
+                        c.addEventListener("mouseup", (event) => mouse_entered_input(event));
+                    }
+                }
+                
+                copy.querySelector("select").addEventListener("change", event => add_variable_type(event));
+                copy.querySelector("input").addEventListener("change", event => add_variable(event));
+                copy.querySelector('button').onclick = () => copy.remove();
+                document.getElementById(codeSection).appendChild(copy);
+            };
+        }
+
+        if (addons.includes("thevariable")){
+            button.onclick = () => {
+                const copy = li.cloneNode(true);
+
+                for (const c of copy.children)
+                {
+                    if (c.tagName == "INPUT"){
+                        c.addEventListener("mouseup", (event) => mouse_entered_input(event));
+                    }
+                }
+
+                copy.querySelector("select").addEventListener("change", event => chosen_set_variable(event));
+                copy.querySelector('button').onclick = () => copy.remove();
+                document.getElementById(codeSection).appendChild(copy);
             };
         }
 
@@ -188,12 +453,13 @@ function update_panel(inner)
                 let text = document.createElement("input");
                 text.type = "text";
                 text.placeholder = "text";
+                
 
                 li.appendChild(text);
             } else if (addon == "variable"){
                 let variable = document.createElement("input");
                 variable.type = "text";
-                variable.placeholder = "variable";
+                variable.placeholder = "name";
 
                 li.appendChild(variable);
             } else if (addon == "option"){
@@ -211,6 +477,40 @@ function update_panel(inner)
                 selector.appendChild(option2);
 
                 li.appendChild(selector);
+            } else if (addon == "thevariable"){
+                let thevariable = document.createElement("select")
+                thevariable.name = "variable";;
+
+                let defaultOpt = document.createElement("option");
+                defaultOpt.value = "variable";
+                defaultOpt.textContent = "variable";
+                thevariable.appendChild(defaultOpt);
+
+                Object.keys(variables).forEach(variable => {
+                    let option = document.createElement("option");
+                    option.value = variable;
+                    option.textContent = variable;
+                    thevariable.appendChild(option);
+                })
+
+                li.appendChild(thevariable);
+            } else if (addon == "variablevalue"){
+                let variablevalue = document.createElement("select");
+                variablevalue.name = "value";
+
+                let defaultOpt = document.createElement("option");
+                defaultOpt.value = "value";
+                defaultOpt.textContent = "value";
+                variablevalue.appendChild(defaultOpt);
+
+                ["text", "number"].forEach(valuetype => {
+                    let option = document.createElement("option");
+                    option.value = valuetype;
+                    option.textContent = valuetype;
+                    variablevalue.appendChild(option);
+                })
+
+                li.appendChild(variablevalue)
             }
         });
 
