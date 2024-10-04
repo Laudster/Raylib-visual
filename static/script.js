@@ -19,7 +19,7 @@ const codeblocks = {
     "Input": ["IsKeyDown: (keycode)", "IsMouseDown: (mousebutton)"],
     "Logic": ["If: (statement)", "Else", "Else If: (statement)"],
     "Loops": ["For: (statement)", "While: (statement)"],
-    "Math": ["(number) + (number)", "(number) - (number)", "(number) * (number)", "(number) : (number)"],
+    "Math": ["(number) + (number)", "(number) - (number)", "(number) * (number)", "(number) : (number)", "(number) == (number)", "(text) == (text)"],
     "Variables": ["Create variable: (assignvalue) (variable)", "Set variable: (thevariable) (value)"]}
 
 let variables = {"defaultColour": "0x000000ff", "FPS": 60, "title": "Game"};
@@ -37,7 +37,7 @@ function isHex(inputString)
 
 function mouse_entered_input(event)
 {
-    if (event.target.style.borderColor == "blue"){
+    if (event.target.style.borderColor == "blue" && variableSelelect != ""){
         let variablebutton = document.createElement("button");
         variablebutton.textContent = variableSelelect;
 
@@ -257,32 +257,25 @@ function update_panel(inner)
 
             button.onmousedown = () =>{
                 variableSelelect = button.textContent;
-                for (const block of document.getElementById("setup").children){
-                    for (const element of block.children){
-                        if (element.tagName == "INPUT") element.style.borderColor = "blue";
-                    }
-                }
 
-                for (const block of document.getElementById("render").children){
-                    for (const element of block.children){
-                        if (element.tagName == "INPUT") element.style.borderColor = "blue";
+                ["setup", "input", "update", "render"].forEach(ting => {
+                    for (const block of document.getElementById(ting).children){
+                        for (const element of block.children){
+                            if (element.tagName == "INPUT") element.style.borderColor = "blue";
+                        }
                     }
-                }
+                })
             }
 
             button.onmouseup = () =>{
                 variableSelelect = "";
-                for (const block of document.getElementById("setup").children){
-                    for (const element of block.children){
-                        if (element.tagName == "INPUT") element.style.borderColor = "";
+                ["setup", "input", "update", "render"].forEach(ting => {
+                    for (const block of document.getElementById(ting).children){
+                        for (const element of block.children){
+                            if (element.tagName == "INPUT") element.style.borderColor = "";
+                        }
                     }
-                }
-
-                for (const block of document.getElementById("render").children){
-                    for (const element of block.children){
-                        if (element.tagName == "INPUT") element.style.borderColor = "";
-                    }
-                }
+                })
             }
 
             document.getElementById("coding").appendChild(button);
@@ -409,10 +402,33 @@ function update_panel(inner)
         let button = document.createElement("button");
         button.innerHTML = message;
 
-        if (inner == "Math") button.className = "short";
+        if (inner == "Math")
+        {
+                button.className = "short";
+                button.onmousedown = () =>
+                {
+                    ["setup", "input", "update", "render"].forEach(ting => {
+                        for (const block of document.getElementById(ting).children){
+                            for (const element of block.children){
+                                if (element.tagName == "INPUT" && element.type == "number") element.style.borderColor = "blue";
+                            }
+                        }
+                    })
+                }
+
+                button.onmouseup = () => {
+                    ["setup", "input", "update", "render"].forEach(ting => {
+                        for (const block of document.getElementById(ting).children){
+                            for (const element of block.children){
+                                if (element.tagName == "INPUT" && element.type == "number") element.style.borderColor = "";
+                            }
+                        }
+                    })
+                }
+        }
         
         if (inner == "Render"){
-            button.onclick = (event) => {
+            button.onclick = () => {
                 const copy = li.cloneNode(true);
     
                 for (const c of copy.children)
