@@ -14,6 +14,8 @@ let codeSection = "";
 
 let variableSelelect = "";
 
+let mathBlock = "";
+
 const codeblocks = {
     "Render": ["Draw Rectangle: (number) (number) (number) (number) (color)", "Draw Text: (text) (number) (number) (number) (color)"],
     "Input": ["IsKeyDown: (keycode)", "IsMouseDown: (mousebutton)"],
@@ -52,6 +54,18 @@ function mouse_entered_input(event)
                 }
             }
         })
+    } else if (event.target.style.borderColor == "blue" && mathBlock != "")
+    {
+        console.log(mathBlock);
+        console.log(event.target);
+        ["setup", "update", "input", "render"].forEach(stupid => {
+            for (const block of document.getElementById(stupid).children){
+                for (const element of block.children){
+                    if (element.tagName == "INPUT") element.style.borderColor = "";
+                }
+            }
+        })
+        
     }
 }
  
@@ -407,6 +421,8 @@ function update_panel(inner)
                 button.className = "short";
                 button.onmousedown = () =>
                 {
+                    mathBlock = button.parentElement;
+
                     ["setup", "input", "update", "render"].forEach(ting => {
                         for (const block of document.getElementById(ting).children){
                             for (const element of block.children){
@@ -417,6 +433,9 @@ function update_panel(inner)
                 }
 
                 button.onmouseup = () => {
+
+                    mathBlock = "";
+
                     ["setup", "input", "update", "render"].forEach(ting => {
                         for (const block of document.getElementById(ting).children){
                             for (const element of block.children){
