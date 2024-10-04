@@ -16,7 +16,12 @@ char title[20] = "Game";
 int main()
 {
     //Setup
-	char color[20] = "#73299e";
+	int posX = 500;
+	int posY = 100;
+	int scaleX = 250;
+	int scaleY = 40;
+	int size = 40;
+	char text[20] = "masse tekst";
 
 
     SetTraceLogLevel(LOG_ERROR);
@@ -30,8 +35,10 @@ int main()
     while (!WindowShouldClose())
     {
         BeginDrawing();
-			
             ClearBackground(defaultColour);
+			
+			DrawRectangle(posX, posY, scaleX, scaleY, GetColor(0xee2b2bff));
+			DrawText(text, posX, posY, size, GetColor(0x2bca2dff));
         EndDrawing();
     }
     

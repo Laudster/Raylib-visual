@@ -24,6 +24,17 @@ const codeblocks = {
 
 let variables = {"defaultColour": "0x000000ff", "FPS": 60, "title": "Game"};
 
+function isHex(inputString)
+{
+	var re = /[0-9A-Fa-f]{6}/g;
+
+	if(re.test(inputString)) {
+		return true
+	} else {
+		return false
+	}
+}
+
 function mouse_entered_input(event)
 {
     if (event.target.style.borderColor == "blue"){
@@ -153,6 +164,15 @@ function add_variable_type(event)
         event.target.parentElement.appendChild(newInput);
     }
 
+    if (newType == "color")
+        {
+            let newInput = document.createElement("input");
+            newInput.type = "color";
+    
+    
+            event.target.parentElement.appendChild(newInput);
+        }
+
     if (newType == "number")
     {
         let newInput = document.createElement("input");
@@ -170,6 +190,10 @@ function add_variable(event)
     {
         variables[event.target.value] = "";
         update_panel("Variables");
+    } else if (event.target.parentElement.querySelector("select").value == "color"){
+        variables[event.target.value] = "#000000";
+        update_panel("Variables");
+
     } else if (event.target.parentElement.querySelector("select").value == "number")
     {
         variables[event.target.value] = 0;
@@ -186,12 +210,22 @@ function chosen_set_variable(event)
     {
         if (typeof(variables[event.target.value]) == "string")
         {
-            let variableInput = document.createElement("input");
-            variableInput.type = "text";
-            variableInput.placeholder = "text";
-            variableInput.onmouseup = (event) => mouse_entered_input(event);
-            
-            event.target.parentElement.appendChild(variableInput);
+
+            if (isHex(variables[event.target.value]) == true){
+                let variableInput = document.createElement("input");
+                variableInput.type = "color";
+                variableInput.onmouseup = (event) => mouse_entered_input(event);
+                
+                event.target.parentElement.appendChild(variableInput);
+            } else{
+
+                let variableInput = document.createElement("input");
+                variableInput.type = "text";
+                variableInput.placeholder = "text";
+                variableInput.onmouseup = (event) => mouse_entered_input(event);
+                
+                event.target.parentElement.appendChild(variableInput);
+            }
         } else if (typeof(variables[event.target.value]) == "number")
         {
             let variableInput = document.createElement("input");
@@ -356,7 +390,7 @@ function update_panel(inner)
                                 defaultOpt.textContent = "value";
                                 variablevalue.appendChild(defaultOpt);
 
-                                ["text", "number"].forEach(valuetype => {
+                                ["text", "number", "color"].forEach(valuetype => {
                                     let option = document.createElement("option");
                                     option.value = valuetype;
                                     option.textContent = valuetype;
@@ -502,7 +536,7 @@ function update_panel(inner)
                 defaultOpt.textContent = "value";
                 variablevalue.appendChild(defaultOpt);
 
-                ["text", "number"].forEach(valuetype => {
+                ["text", "number", "color"].forEach(valuetype => {
                     let option = document.createElement("option");
                     option.value = valuetype;
                     option.textContent = valuetype;

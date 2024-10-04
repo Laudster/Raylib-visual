@@ -12,6 +12,7 @@ socket = SocketIO(app)
 @app.route("/")
 def start():
     return render_template("index.html")
+ 
 
 def processCode(codeblocks):
     
@@ -19,15 +20,28 @@ def processCode(codeblocks):
     setupCode = ""
 
     print(codeblocks)
+
+    variables = {"defaultColour": "color", "FPS": "number", "title": "text"}
      
     for codeblock in setup:
         if "Set variable" in codeblock:
             splits = codeblock.split(":")[1].split(";")
-            if '"' in splits[1]:
-                name = splits[0].replace(" ", "")
-                setupCode += f"\n\tstrcpy({name}, {splits[1]});"
+            if splits[1] in variables:
+                if variables[splits[1]] == "text":
+                    name = splits[0].replace(" ", "")
+                    setupCode += f"\n\tstrcpy({name}, {splits[1]});"
+                elif variables[splits[1]] == "number":
+                    setupCode += f"\n\t{splits[0]} = {splits[1]};"
+                else:
+                    setupCode += f"\n\t{splits[0]} = {splits[1]};"
             else:
-                print(f"\n\t{splits[0]} = {splits[1]};")
+                if variables[splits[0].replace(" ", "")] == "text":
+                    name = splits[0].replace(" ", "")
+                    setupCode += f"\n\tstrcpy({name}, \"{splits[1]}\");"
+                elif variables[splits[0].replace(" ", "")] == "color":
+                    setupCode += f"\n\t{splits[0]} = GetColor(0x{splits[1][1: len(splits[1])]}ff);"
+                else:
+                    setupCode += f"\n\t{splits[0]} = {splits[1]};"
         
         if "Create variable" in codeblock:
             #Create variable: text;"test";"test text";
@@ -37,17 +51,26 @@ def processCode(codeblocks):
                 name = splits[1].replace(" ", "")
                 value = splits[2]
                 setupCode += f"\n\tchar {name}[20] = \"{value}\";"
+
+                variables[name] = "text"
+            
+            elif splits[0].replace(" ", "") == "color":
+                name = splits[1].replace(" ", "")
+                value = splits[2]
+                setupCode += f"\n\tColor {name} = GetColor(0x{value[1: len(value)]}ff);"
+
+                variables[name] = "color"
             elif splits[0].replace(" ", "") == "number":
                 name = splits[1].replace(" ", "")
                 value = splits[2]
                 setupCode += f"\n\tint {name} = {value};"
+
+                variables[name] = "number"
             else:
                 print(splits[0].replace(" ", ""))
 
     render = codeblocks.get("render")
     renderCode = ""
-
-    print(render)
 
     for codeblock in render:
         if "Clear Background" in codeblock:
@@ -55,7 +78,6 @@ def processCode(codeblocks):
             renderCode += f"\n\t\t\tClearBackground(GetColor(0x{color[1:len(color) - 1]}ff));"
         
         if "Draw Rectangle" in codeblock:
-            #Draw Rectangle: 0 0 0 0 #000000
             splits = codeblock.split(": ")[1].split(";")
             renderCode += f"\n\t\t\tDrawRectangle({splits[0]}, {splits[1]}, {splits[2]}, {splits[3]}, GetColor(0x{splits[4][1:len(splits[4])]}ff));"
         
@@ -68,7 +90,7 @@ def processCode(codeblocks):
         projectCode = file.read()
 
         projectCode = projectCode.replace("//Setup", "//Setup" + setupCode)
-        projectCode = projectCode.replace("BeginDrawing();", "BeginDrawing();\n\t\t\t" + renderCode)
+        projectCode = projectCode.replace("ClearBackground(defaultColour);", "ClearBackground(defaultColour);\n\t\t\t" + renderCode)
             
     with open("project_file.c", "w") as file:
         file.write(projectCode)
