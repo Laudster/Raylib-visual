@@ -16,29 +16,27 @@ char title[20] = "Game";
 int main()
 {
     //Setup
-	int posX = 500;
-	int posY = 100;
-	int scaleX = 250;
-	int scaleY = 40;
-	int size = 40;
-	char text[20] = "masse tekst";
+	int num = 1;
+	 defaultColour = GetColor(0x000000ff);
 
 
     SetTraceLogLevel(LOG_ERROR);
     InitWindow(1920, 1080, title);
+    InitAudioDevice();
     SetTargetFPS(FPS);
-
-    //Input
-
-    //Update
 
     while (!WindowShouldClose())
     {
+        //Input
+
+
+        //Update
+		 num = num* 1.5;
+
+
         BeginDrawing();
-            ClearBackground(defaultColour);
-			
-			DrawRectangle(posX, posY, scaleX, scaleY, GetColor(0xee2b2bff));
-			DrawText(text, posX, posY, size, GetColor(0x2bca2dff));
+            ClearBackground(defaultColour);			
+			DrawRectangle(num, 0, 50, 50, GetColor(0xffffffff));
         EndDrawing();
     }
     

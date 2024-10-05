@@ -43,6 +43,8 @@ function mouse_entered_input(event)
         let variablebutton = document.createElement("button");
         variablebutton.textContent = variableSelelect;
 
+        variableSelelect = "";
+
         event.target.parentElement.insertBefore(variablebutton, event.target);
 
         event.target.remove();
@@ -56,8 +58,20 @@ function mouse_entered_input(event)
         })
     } else if (event.target.style.borderColor == "blue" && mathBlock != "")
     {
-        console.log(mathBlock);
-        console.log(event.target);
+        for (const child of mathBlock.children){
+            let copy = child.cloneNode();
+            copy.innerHTML = child.innerHTML;
+            
+            if (copy.tagName == "INPUT"){
+                copy.addEventListener("mouseup", (event) => mouse_entered_input(event));
+            }
+
+            event.target.parentElement.insertBefore(copy, event.target);
+        }
+        event.target.remove();
+
+        mathBlock = "";
+
         ["setup", "update", "input", "render"].forEach(stupid => {
             for (const block of document.getElementById(stupid).children){
                 for (const element of block.children){
@@ -131,7 +145,16 @@ function processCodeblocks()
 
         let line = "";
         for (const child of block.children){
-            if (child.textContent) line += child.textContent;
+            if (child.textContent && child.tagName != "SELECT")
+            {
+                if (child.textContent in variables)
+                {
+                    line += child.textContent + ";";
+                } else
+                {
+                    line += child.textContent; console.log(child.textContent in variables);
+                }
+            }
             if (child.value) line += child.value + ";";
         }
 
@@ -271,6 +294,8 @@ function update_panel(inner)
 
             button.onmousedown = () =>{
                 variableSelelect = button.textContent;
+
+                console.log(variableSelelect);
 
                 ["setup", "input", "update", "render"].forEach(ting => {
                     for (const block of document.getElementById(ting).children){

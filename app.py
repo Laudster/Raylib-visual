@@ -31,7 +31,10 @@ def processCode(codeblocks):
                     name = splits[0].replace(" ", "")
                     setupCode += f"\n\tstrcpy({name}, {splits[1]});"
                 elif variables[splits[1]] == "number":
-                    setupCode += f"\n\t{splits[0]} = {splits[1]};"
+                    value = ""
+                    for i in range(1, len(splits)):
+                        value += splits[i]
+                    setupCode += f"\n\t{splits[0]} = {value};"
                 else:
                     setupCode += f"\n\t{splits[0]} = {splits[1]};"
             else:
@@ -41,7 +44,10 @@ def processCode(codeblocks):
                 elif variables[splits[0].replace(" ", "")] == "color":
                     setupCode += f"\n\t{splits[0]} = GetColor(0x{splits[1][1: len(splits[1])]}ff);"
                 else:
-                    setupCode += f"\n\t{splits[0]} = {splits[1]};"
+                    value = ""
+                    for i in range(1, len(splits)):
+                        value += splits[i]
+                    setupCode += f"\n\t{splits[0]} = {value};"
         
         if "Create variable" in codeblock:
             #Create variable: text;"test";"test text";
@@ -69,6 +75,35 @@ def processCode(codeblocks):
             else:
                 print(splits[0].replace(" ", ""))
 
+    update = codeblocks.get("update")
+    updateCode = ""
+    
+    for codeblock in update:
+        if "Set variable" in codeblock:
+            splits = codeblock.split(":")[1].split(";")
+            if splits[1] in variables:
+                if variables[splits[1]] == "text":
+                    name = splits[0].replace(" ", "")
+                    updateCode += f"\n\t\tstrcpy({name}, {splits[1]});"
+                elif variables[splits[1]] == "number":
+                    value = ""
+                    for i in range(1, len(splits)):
+                        value += splits[i]
+                    updateCode += f"\n\t\t{splits[0]} = {value};"
+                else:
+                    updateCode += f"\n\t\t{splits[0]} = {splits[1]};"
+            else:
+                if variables[splits[0].replace(" ", "")] == "text":
+                    name = splits[0].replace(" ", "")
+                    updateCode += f"\n\t\tstrcpy({name}, \"{splits[1]}\");"
+                elif variables[splits[0].replace(" ", "")] == "color":
+                    updateCode += f"\n\t\t{splits[0]} = GetColor(0x{splits[1][1: len(splits[1])]}ff);"
+                else:
+                    value = ""
+                    for i in range(1, len(splits)):
+                        value += splits[i]
+                    updateCode += f"\n\t\t{splits[0]} = {value};"
+    
     render = codeblocks.get("render")
     renderCode = ""
 
@@ -90,7 +125,8 @@ def processCode(codeblocks):
         projectCode = file.read()
 
         projectCode = projectCode.replace("//Setup", "//Setup" + setupCode)
-        projectCode = projectCode.replace("ClearBackground(defaultColour);", "ClearBackground(defaultColour);\n\t\t\t" + renderCode)
+        projectCode = projectCode.replace("//Update", "//Update" + updateCode)
+        projectCode = projectCode.replace("ClearBackground(defaultColour);", "ClearBackground(defaultColour);\t\t\t" + renderCode)
             
     with open("project_file.c", "w") as file:
         file.write(projectCode)
@@ -100,12 +136,12 @@ def processCode(codeblocks):
 def build(code):
     processCode(code)
 
-
     for file in os.listdir("web-build"):
         if os.path.isfile(os.path.join("web-build", file)):
-            os.remove(os.path.join("web-build", file))
+            #os.remove(os.path.join("web-build", file))
+            pass
 
-    Popen(r"build.bat", shell=True)
+    Popen("python3 -m http.server -d web-build/", shell=True)
 
     while not os.path.isfile("web-build/project.html"):
         sleep(1)

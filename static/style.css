@@ -188,6 +188,10 @@ li
     cursor: pointer;
 }
 
+#codeblocks button.short:hover{
+    cursor: pointer;
+}
+
 .codeheader
 {
     font-family: Arial;

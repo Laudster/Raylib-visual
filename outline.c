@@ -20,14 +20,17 @@ int main()
 
     SetTraceLogLevel(LOG_ERROR);
     InitWindow(1920, 1080, title);
+    InitAudioDevice();
     SetTargetFPS(FPS);
-
-    //Input
-
-    //Update
 
     while (!WindowShouldClose())
     {
+        //Input
+
+
+        //Update
+
+
         BeginDrawing();
             ClearBackground(defaultColour);
         EndDrawing();
