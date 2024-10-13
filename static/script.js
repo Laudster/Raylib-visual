@@ -483,7 +483,7 @@ function update_panel(inner)
                 }
 
                 copy.querySelector('button').onclick = () => copy.remove();
-                document.getElementById(li.name).appendChild(copy);
+                document.getElementById(codeSection).appendChild(copy);
             };
         }
 
@@ -638,6 +638,8 @@ function build_project()
             document.getElementById("build").style.backgroundColor = "";
             document.getElementById("open").style.display = "none";
             socket.emit("shutdown");
+
+            document.getElementById("display").children[0].remove();
         } else
         {
             document.getElementById("build").style.backgroundColor = "rgb(27, 240, 27, 0.7)";
@@ -655,6 +657,10 @@ function open_project()
 }
 
 socket.on("build-finnished", function(link){
+    let iframe = document.createElement("iframe");
+    iframe.src = "http://localhost:8000/project.html";
+    document.getElementById("display").appendChild(iframe);
+
     document.body.style.cursor = "";
     document.getElementById("build").style.cursor = "pointer";
     projectLink = link;

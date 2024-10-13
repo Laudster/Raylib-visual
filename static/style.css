@@ -104,6 +104,9 @@ input[placeholder="text"]
     background-color: black;
     width: 30%;
     height: 40%;
+    overflow: hidden;
+    border-top: solid 5px grey;
+    border-left: solid 5px grey;
 }
 
 #config
@@ -200,4 +203,14 @@ li
     width: 25%;
     padding-left: 1%;
     margin-bottom: 4%;
+}
+
+iframe
+{
+    width: 1920px;
+    height: 1080px;
+    transform: scale(0.35); /* Scale down by 4x */
+    transform-origin: top left; /* Keep the scaling relative to the top-left corner */
+    border: none; /* Optional: remove iframe border */
+    overflow: hidden;
 }

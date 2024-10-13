@@ -16,8 +16,6 @@ char title[20] = "Game";
 int main()
 {
     //Setup
-	int num = 1;
-	 defaultColour = GetColor(0x000000ff);
 
 
     SetTraceLogLevel(LOG_ERROR);
@@ -31,12 +29,10 @@ int main()
 
 
         //Update
-		 num = num* 1.5;
 
 
         BeginDrawing();
             ClearBackground(defaultColour);			
-			DrawRectangle(num, 0, 50, 50, GetColor(0xffffffff));
         EndDrawing();
     }
     

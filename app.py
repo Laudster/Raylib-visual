@@ -138,10 +138,9 @@ def build(code):
 
     for file in os.listdir("web-build"):
         if os.path.isfile(os.path.join("web-build", file)):
-            #os.remove(os.path.join("web-build", file))
-            pass
+            os.remove(os.path.join("web-build", file))
 
-    Popen("python3 -m http.server -d web-build/", shell=True)
+    Popen(r"build.bat", shell=True)
 
     while not os.path.isfile("web-build/project.html"):
         sleep(1)
