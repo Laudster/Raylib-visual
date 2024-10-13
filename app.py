@@ -75,6 +75,82 @@ def processCode(codeblocks):
             else:
                 print(splits[0].replace(" ", ""))
 
+    input = codeblocks.get("input")
+    inputCode = ""
+
+    # get this to work {'setup': [], 'input': ['If: IsKeyDown: Space;', 'tabSet variable: defaultColour;#e14141;'], 'update': [], 'render': []}
+
+    isInIfStatement = False
+
+    beguneIf = False
+
+    for codeblock in input:
+        if not "tab" in codeblock and isInIfStatement == True and beguneIf == True:
+            isInIfStatement = False
+            inputCode += "}"
+            print(codeblock)
+    
+        if "Set variable" in codeblock:
+            if isInIfStatement: beguneIf = True
+            splits = codeblock.split(":")[1].split(";")
+            if splits[1] in variables:
+                if variables[splits[1]] == "text":
+                    name = splits[0].replace(" ", "")
+                    if isInIfStatement == True:
+                        inputCode += f"strcpy({name}, {splits[1]});"
+                    else:
+                        inputCode += f"\n\t\tstrcpy({name}, {splits[1]});"
+                elif variables[splits[1]] == "number":
+                    value = ""
+                    for i in range(1, len(splits)):
+                        value += splits[i]
+                    if isInIfStatement == True:
+                        inputCode += f"{splits[0]} = {value};"
+                    else:
+                        inputCode += f"\n\t\t{splits[0]} = {value};"
+                else:
+                    if isInIfStatement == True:
+                        inputCode += f"{splits[0]} = {splits[1]};"
+                    else:
+                        inputCode += f"\n\t\t{splits[0]} = {splits[1]};"
+            else:
+                if variables[splits[0].replace(" ", "")] == "text":
+                    name = splits[0].replace(" ", "")
+                    if isInIfStatement == True:
+                        inputCode += f"strcpy({name}, \"{splits[1]}\");"
+                    else:
+                        inputCode += f"\n\t\tstrcpy({name}, \"{splits[1]}\");"
+                elif variables[splits[0].replace(" ", "")] == "color":
+                    if isInIfStatement == True:
+                        inputCode += f"{splits[0]} = GetColor(0x{splits[1][1: len(splits[1])]}ff);"
+                    else:
+                        inputCode += f"\n\t\t{splits[0]} = GetColor(0x{splits[1][1: len(splits[1])]}ff);"
+                else:
+                    value = ""
+                    for i in range(1, len(splits)):
+                        value += splits[i]
+                    
+                    if isInIfStatement == True:
+                        inputCode += f"\n\t\t{splits[0]} = {value};"
+                    else:
+                        inputCode += f"\n\t\t{splits[0]} = {value};"
+
+        if "If" in codeblock:
+            isInIfStatement = True
+            beguneIf = True
+            if "IsKeyDown" in codeblock:
+                key = ""
+
+                if "Space" in codeblock: key = "KEY_SPACE"
+                if "Arrow Down" in codeblock: key = "KEY_DOWN"
+                if "Arrow Up" in codeblock: key = "KEY_UP"
+                if "Arrow Left" in codeblock: key = "KEY_LEFT"
+                if "Arrow Right" in codeblock: key = "KEY_RIGHT"
+
+                inputCode += "\n\t\tif (IsKeyDown("+ key + ")){"
+    
+    if isInIfStatement == True: inputCode += "}"
+
     update = codeblocks.get("update")
     updateCode = ""
     
@@ -116,6 +192,10 @@ def processCode(codeblocks):
             splits = codeblock.split(": ")[1].split(";")
             renderCode += f"\n\t\t\tDrawRectangle({splits[0]}, {splits[1]}, {splits[2]}, {splits[3]}, GetColor(0x{splits[4][1:len(splits[4])]}ff));"
         
+        if "Draw Circle" in codeblock:
+            splits = codeblock.split(": ")[1].split(";")
+            renderCode += f"\n\t\t\tDrawCircle({splits[0]}, {splits[1]}, {splits[2]}, GetColor(0x{splits[4][1:len(splits[4])]}ff));"
+        
         if "Draw Text" in codeblock:
             #Draw Text: 0 0 0 0 #000000 
             splits = codeblock.split(": ")[1].split(";")
@@ -125,6 +205,7 @@ def processCode(codeblocks):
         projectCode = file.read()
 
         projectCode = projectCode.replace("//Setup", "//Setup" + setupCode)
+        projectCode = projectCode.replace("//Input", "//Input" + inputCode)
         projectCode = projectCode.replace("//Update", "//Update" + updateCode)
         projectCode = projectCode.replace("ClearBackground(defaultColour);", "ClearBackground(defaultColour);\t\t\t" + renderCode)
             

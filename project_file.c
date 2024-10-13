@@ -16,6 +16,8 @@ char title[20] = "Game";
 int main()
 {
     //Setup
+	int X = 0;
+	int Y = 0;
 
 
     SetTraceLogLevel(LOG_ERROR);
@@ -26,6 +28,10 @@ int main()
     while (!WindowShouldClose())
     {
         //Input
+		if (IsKeyDown(KEY_UP)){ Y = Y+ -1;}
+		if (IsKeyDown(KEY_DOWN)){ Y = Y- -1;}
+		if (IsKeyDown(KEY_LEFT)){ X = X- 1;}
+		if (IsKeyDown(KEY_RIGHT)){ X = X+ 1;}
 
 
         //Update
@@ -33,6 +39,7 @@ int main()
 
         BeginDrawing();
             ClearBackground(defaultColour);			
+			DrawCircle(X, Y, 50, GetColor(0xff));
         EndDrawing();
     }
     

@@ -181,11 +181,6 @@ li
     width: 4%;
 }
 
-#codeblocks button:hover
-{
-    cursor: not-allowed;
-}
-
 #codeblocks button.codeheader:hover
 {
     cursor: pointer;

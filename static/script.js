@@ -16,8 +16,10 @@ let variableSelelect = "";
 
 let mathBlock = "";
 
+let keyBlock = "";
+
 const codeblocks = {
-    "Render": ["Draw Rectangle: (number) (number) (number) (number) (color)", "Draw Text: (text) (number) (number) (number) (color)"],
+    "Render": ["Draw Rectangle: (number) (number) (number) (number) (color)", "Draw Circle: (number) (number) (number) (color)", "Draw Text: (text) (number) (number) (number) (color)"],
     "Input": ["IsKeyDown: (keycode)", "IsMouseDown: (mousebutton)"],
     "Logic": ["If: (statement)", "Else", "Else If: (statement)"],
     "Loops": ["For: (statement)", "While: (statement)"],
@@ -39,6 +41,7 @@ function isHex(inputString)
 
 function mouse_entered_input(event)
 {
+    console.log(keyBlock);
     if (event.target.style.borderColor == "blue" && variableSelelect != ""){
         let variablebutton = document.createElement("button");
         variablebutton.textContent = variableSelelect;
@@ -80,7 +83,31 @@ function mouse_entered_input(event)
             }
         })
         
-    }
+    } else if (event.target.style.borderColor == "blue" && keyBlock != "")
+        {
+            for (const child of keyBlock.children){
+                let copy = child.cloneNode();
+                copy.innerHTML = child.innerHTML;
+                
+                if (copy.tagName == "INPUT"){
+                    copy.addEventListener("mouseup", (event) => mouse_entered_input(event));
+                }
+    
+                event.target.parentElement.insertBefore(copy, event.target);
+            }
+            event.target.remove();
+    
+            keyBlock = "";
+    
+            ["setup", "update", "input", "render"].forEach(stupid => {
+                for (const block of document.getElementById(stupid).children){
+                    for (const element of block.children){
+                        if (element.type == "tel") element.style.borderColor = "";
+                    }
+                }
+            })
+            
+        }
 }
  
 
@@ -111,6 +138,8 @@ function processCodeblocks()
     for (const block of document.getElementById("setup").children){
 
         let line = "";
+
+        if (block.style.marginLeft == "5%") line += "tab";
         for (const child of block.children){
             if (child.textContent && child.tagName != "SELECT")
             {
@@ -132,8 +161,19 @@ function processCodeblocks()
     for (const block of document.getElementById("input").children){
 
         let line = "";
+
+        if (block.style.marginLeft == "5%") line += "tab";
         for (const child of block.children){
-            if (child.textContent) line += child.textContent;
+            if (child.textContent && child.tagName != "SELECT")
+            {
+                if (child.textContent in variables)
+                {
+                    line += child.textContent + ";";
+                } else
+                {
+                    line += child.textContent; console.log(child.textContent in variables);
+                }
+            }
             if (child.value) line += child.value + ";";
         }
 
@@ -144,6 +184,8 @@ function processCodeblocks()
     for (const block of document.getElementById("update").children){
 
         let line = "";
+
+        if (block.style.marginLeft == "5%") line += "tab";
         for (const child of block.children){
             if (child.textContent && child.tagName != "SELECT")
             {
@@ -165,6 +207,8 @@ function processCodeblocks()
     for (const block of document.getElementById("render").children){
 
         let line = "";
+
+        if (block.style.marginLeft == "5%") line += "tab";
         for (const child of block.children){
             if (child.textContent && child.tagName != "SELECT")
             {
@@ -376,23 +420,34 @@ function update_panel(inner)
 
                                 li.appendChild(variable);
                             } else addons.push("variable");
-                        } else if (word == "(keycode)" || word == "(mousebutton)"){
+                        } else if (word == "(keycode)"){
                             if (i == 0){
                                 let selector = document.createElement("select")
                                 selector.name = "options";
 
-                                let option1 = document.createElement("option");
-                                option1.value = "Option1";
-                                option1.textContent = "Option1";
-                                selector.appendChild(option1);
-
-                                let option2 = document.createElement("option");
-                                option2.value = "option2";
-                                option2.textContent = "option2";
-                                selector.appendChild(option2);
+                                ["Space", "Arrow Up", "Arrow Down", "Arrow Left", "Arrow Right"].forEach(key =>{
+                                    let option1 = document.createElement("option");
+                                    option1.value = key;
+                                    option1.textContent = key;
+                                    selector.appendChild(option1);
+                                })
 
                                 li.appendChild(selector);
-                            } else addons.push("option")
+                            } else addons.push("keycode")
+                        } else if (word == "(mousebutton)"){
+                            if (i == 0){
+                                let selector = document.createElement("select")
+                                selector.name = "options";
+
+                                ["Left", "Right", "Middle"].forEach(key =>{
+                                    let option1 = document.createElement("option");
+                                    option1.value = key;
+                                    option1.textContent = key;
+                                    selector.appendChild(option1);
+                                })
+
+                                li.appendChild(selector);
+                            } else addons.push("mousebutton");
                         } else if (word == "(thevariable)"){
                             if (i == 0){
                                 let thevariable = document.createElement("select");
@@ -470,6 +525,49 @@ function update_panel(inner)
                     })
                 }
         }
+
+        if (inner == "Input"){
+            button.onmousedown = () =>{
+                keyBlock = li;
+    
+                ["setup", "input", "update", "render"].forEach(ting => {
+                    for (const block of document.getElementById(ting).children){
+                        for (const element of block.children){
+                            if (element.type == "tel") element.style.borderColor = "blue";
+                        }
+                    }
+                })
+            }
+
+            button.onmouseup = () =>{
+                keyBlock = "";
+    
+                ["setup", "input", "update", "render"].forEach(ting => {
+                    for (const block of document.getElementById(ting).children){
+                        for (const element of block.children){
+                            if (element.type == "tel") element.style.borderColor = "";
+                        }
+                    }
+                })
+            }
+        }
+
+        if (inner == "Logic"){
+            button.onclick = () => {
+                const copy = li.cloneNode(true);
+
+                copy.querySelector('button').addEventListener("mousedown", function(event){
+                    event.preventDefault();
+                    console.log(event.button);
+                    if (event.button == 0) codeSection = copy;
+                    if (event.button == 1) copy.remove();
+                })
+
+                copy.querySelector("input").addEventListener("mouseup", (event) => mouse_entered_input(event));
+
+                document.getElementById(codeSection).appendChild(copy);
+            };
+        }
         
         if (inner == "Render"){
             button.onclick = () => {
@@ -482,7 +580,11 @@ function update_panel(inner)
                     }
                 }
 
-                copy.querySelector('button').onclick = () => copy.remove();
+                copy.querySelector('button').addEventListener("mousedown", function(event){
+                    event.preventDefault();
+                    console.log(event.button);
+                    if (event.button == 1) copy.remove();
+                })
                 document.getElementById(codeSection).appendChild(copy);
             };
         }
@@ -500,7 +602,12 @@ function update_panel(inner)
                 
                 copy.querySelector("select").addEventListener("change", event => add_variable_type(event));
                 copy.querySelector("input").addEventListener("change", event => add_variable(event));
-                copy.querySelector('button').onclick = () => copy.remove();
+                copy.querySelector('button').addEventListener("mousedown", function(event){
+                    event.preventDefault();
+                    console.log(event.button);
+                    if (event.button == 1) copy.remove();
+                })
+
                 document.getElementById(codeSection).appendChild(copy);
             };
         }
@@ -517,8 +624,18 @@ function update_panel(inner)
                 }
 
                 copy.querySelector("select").addEventListener("change", event => chosen_set_variable(event));
-                copy.querySelector('button').onclick = () => copy.remove();
-                document.getElementById(codeSection).appendChild(copy);
+                copy.querySelector('button').addEventListener("mousedown", function(event){
+                    event.preventDefault();
+                    console.log(event.button);
+                    if (event.button == 1) copy.remove();
+                })
+
+                console.log(codeSection);
+                if (typeof(codeSection) !== "string"){
+                    codeSection.parentElement.insertBefore(copy, codeSection.nextSibling);
+                    copy.style.marginLeft = "5%";
+                }
+                else document.getElementById(codeSection).appendChild(copy);
             };
         }
 
@@ -538,7 +655,7 @@ function update_panel(inner)
                 li.appendChild(number);
             } else if (addon == "statement"){
                 let statement = document.createElement("input");
-                statement.type = "text";
+                statement.type = "tel";
                 statement.placeholder = "statement";
 
                 li.appendChild(statement);
@@ -555,19 +672,38 @@ function update_panel(inner)
                 variable.placeholder = "name";
 
                 li.appendChild(variable);
-            } else if (addon == "option"){
+            } else if (addon == "keycode"){
                 let selector = document.createElement("select")
                 selector.name = "options";
 
                 let option1 = document.createElement("option");
-                option1.value = "Option1";
-                option1.textContent = "Option1";
+                option1.value = "value";
+                option1.textContent = "value";
                 selector.appendChild(option1);
 
-                let option2 = document.createElement("option");
-                option2.value = "option2";
-                option2.textContent = "option2";
-                selector.appendChild(option2);
+                ["Space", "Arrow Up", "Arrow Down", "Arrow Left", "Arrow Right"].forEach(key =>{
+                    let option1 = document.createElement("option");
+                    option1.value = key;
+                    option1.textContent = key;
+                    selector.appendChild(option1);
+                })
+
+                li.appendChild(selector);
+            } else if (addon == "mousebutton"){
+                let selector = document.createElement("select")
+                selector.name = "options";
+
+                let option1 = document.createElement("option");
+                option1.value = "value";
+                option1.textContent = "value";
+                selector.appendChild(option1);
+
+                ["Left", "Right", "Middle"].forEach(key =>{
+                    let option = document.createElement("option");
+                    option.value = key;
+                    option.textContent = key;
+                    selector.appendChild(option);
+                })
 
                 li.appendChild(selector);
             } else if (addon == "thevariable"){
