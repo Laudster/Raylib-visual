@@ -148,6 +148,24 @@ def processCode(codeblocks):
                 if "Arrow Right" in codeblock: key = "KEY_RIGHT"
 
                 inputCode += "\n\t\tif (IsKeyDown("+ key + ")){"
+
+            if "==" in codeblock:
+                #'If: Not 0;== 1;
+                if "Not" in codeblock:
+                    splits = codeblock[codeblock.index("t") + 2: len(codeblock)].split(";")
+                    print(splits)
+                    value = ""
+                    for i in range(1, len(splits)):
+                        value += splits[i].replace(" ", "").replace("Or", "||").replace("And", "&&").replace("Not", "!")
+                    inputCode += "\n\t\tif (!" + splits[0].replace(" ", "") + value + "){"
+                else:
+                    splits = codeblock.split(":")[1].split(";")
+                    if splits[0].replace(" ", "").isnumeric() or splits[0].replace(" ", "") in variables and variables[splits[0].replace(" ", "")] == "number":
+                        value = ""
+                        for i in range(1, len(splits)):
+                            value += splits[i].replace(" ", "").replace("Or", "||").replace("And", "&&")
+                        inputCode += "\n\t\tif (" + splits[0].replace(" ", "") + value + "){"
+
     
     if isInIfStatement == True: inputCode += "}"
 

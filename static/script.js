@@ -12,17 +12,11 @@ let projectLink = "";
 
 let codeSection = "";
 
-let variableSelelect = "";
-
-let mathBlock = "";
-
-let keyBlock = "";
-
 const codeblocks = {
     "Render": ["Draw Rectangle: (number) (number) (number) (number) (color)", "Draw Circle: (number) (number) (number) (color)", "Draw Text: (text) (number) (number) (number) (color)"],
     "Input": ["IsKeyDown: (keycode)", "IsMouseDown: (mousebutton)"],
-    "Logic": ["If: (statement)", "Else", "Else If: (statement)"],
-    "Loops": ["For: (statement)", "While: (statement)"],
+    "Logic": ["If: (statement)", "Else", "Else If: (statement)", "And", "Or", "Not"],
+    "Loops": ["Loop: (number)", "While: (statement)"],
     "Math": ["(number) + (number)", "(number) - (number)", "(number) * (number)", "(number) : (number)", "(number) == (number)", "(text) == (text)"],
     "Variables": ["Create variable: (assignvalue) (variable)", "Set variable: (thevariable) (value)"]}
 
@@ -39,9 +33,26 @@ function isHex(inputString)
 	}
 }
 
+function highlight(color){
+    ["setup", "input", "update", "render"].forEach(ting => {
+        for (const block of document.getElementById(ting).children){
+            for (const element of block.children){
+                if (element.type == "tel") element.style.borderColor = color;
+            }
+        }
+    })
+}
+
+let variableSelelect = "";
+
+let mathBlock = "";
+
+let keyBlock = "";
+
+let operatorBlock = "";
+
 function mouse_entered_input(event)
 {
-    console.log(keyBlock);
     if (event.target.style.borderColor == "blue" && variableSelelect != ""){
         let variablebutton = document.createElement("button");
         variablebutton.textContent = variableSelelect;
@@ -92,21 +103,39 @@ function mouse_entered_input(event)
                 if (copy.tagName == "INPUT"){
                     copy.addEventListener("mouseup", (event) => mouse_entered_input(event));
                 }
+                
+                event.target.style.width = "1%";
+                event.target.placeholder = "";
     
                 event.target.parentElement.insertBefore(copy, event.target);
             }
-            event.target.remove();
     
             keyBlock = "";
     
-            ["setup", "update", "input", "render"].forEach(stupid => {
-                for (const block of document.getElementById(stupid).children){
-                    for (const element of block.children){
-                        if (element.type == "tel") element.style.borderColor = "";
-                    }
-                }
-            })
+            highlight("");
             
+        } else if (event.target.style.borderColor == "blue" && operatorBlock != "" && operatorBlock.innerHTML != "Not "){
+            let newOperator = operatorBlock.cloneNode();
+            newOperator.innerHTML = operatorBlock.innerHTML;
+            event.target.parentElement.appendChild(newOperator);
+
+            let newStatement = document.createElement("input");
+            newStatement.type = "tel";
+            newStatement.placeholder = "statement";
+            newStatement.addEventListener("mouseup", (event) => mouse_entered_input(event));
+            event.target.parentElement.appendChild(newStatement)
+
+            if (event.target.placeholder == "") event.target.remove();
+
+            operatorBlock = "";
+            highlight("");
+        } else if (event.target.style.borderColor == "blue" && operatorBlock.innerHTML != ""){
+            let newOperator = operatorBlock.cloneNode();
+            newOperator.innerHTML = operatorBlock.innerHTML;
+            event.target.parentElement.insertBefore(newOperator, event.target);
+
+            operatorBlock = "";
+            highlight("");
         }
 }
  
@@ -115,13 +144,12 @@ function chosen_section(button)
 {
     if (codeSection == button.textContent.charAt(1).toLowerCase() + button.textContent.slice(2).replace(" ", ""))
     {
-        ["Setup", "Input", "Update", "Render"].forEach(id => {
-            document.getElementById(id).querySelector("button").style.backgroundColor = "";
-        });
+        document.getElementById(codeSection[0].toUpperCase() + codeSection.slice(1)).querySelector("button").style.backgroundColor = "";
 
         codeSection = "";
     } else
     {
+        if (typeof(codeSection) !== "string") codeSection.querySelector("button").style.backgroundColor = "";
         codeSection = button.textContent.charAt(1).toLowerCase() + button.textContent.slice(2).replace(" ", "");
 
         ["Setup", "Input", "Update", "Render"].forEach(id => {
@@ -148,7 +176,7 @@ function processCodeblocks()
                     line += child.textContent + ";";
                 } else
                 {
-                    line += child.textContent; console.log(child.textContent in variables);
+                    line += child.textContent;
                 }
             }
             if (child.value) line += child.value + ";";
@@ -171,7 +199,7 @@ function processCodeblocks()
                     line += child.textContent + ";";
                 } else
                 {
-                    line += child.textContent; console.log(child.textContent in variables);
+                    line += child.textContent;
                 }
             }
             if (child.value) line += child.value + ";";
@@ -194,7 +222,7 @@ function processCodeblocks()
                     line += child.textContent + ";";
                 } else
                 {
-                    line += child.textContent; console.log(child.textContent in variables);
+                    line += child.textContent;
                 }
             }
             if (child.value) line += child.value + ";";
@@ -217,7 +245,7 @@ function processCodeblocks()
                     line += child.textContent + ";";
                 } else
                 {
-                    line += child.textContent; console.log(child.textContent in variables);
+                    line += child.textContent;
                 }
             }
             if (child.value) line += child.value + ";";
@@ -339,7 +367,6 @@ function update_panel(inner)
             button.onmousedown = () =>{
                 variableSelelect = button.textContent;
 
-                console.log(variableSelelect);
 
                 ["setup", "input", "update", "render"].forEach(ting => {
                     for (const block of document.getElementById(ting).children){
@@ -499,30 +526,58 @@ function update_panel(inner)
         if (inner == "Math")
         {
                 button.className = "short";
-                button.onmousedown = () =>
+
+                if (button.textContent.replace(" ", "") != "=="){
+                    button.onmousedown = () =>
+                        {
+                            mathBlock = button.parentElement;
+        
+                            ["setup", "input", "update", "render"].forEach(ting => {
+                                for (const block of document.getElementById(ting).children){
+                                    for (const element of block.children){
+                                        if (element.tagName == "INPUT" && element.type == "number") element.style.borderColor = "blue";
+                                    }
+                                }
+                            })
+                        }
+        
+                        button.onmouseup = () => {
+        
+                            mathBlock = "";
+        
+                            ["setup", "input", "update", "render"].forEach(ting => {
+                                for (const block of document.getElementById(ting).children){
+                                    for (const element of block.children){
+                                        if (element.tagName == "INPUT" && element.type == "number") element.style.borderColor = "";
+                                    }
+                                }
+                            })
+                        }
+                } else
                 {
-                    mathBlock = button.parentElement;
-
-                    ["setup", "input", "update", "render"].forEach(ting => {
-                        for (const block of document.getElementById(ting).children){
-                            for (const element of block.children){
-                                if (element.tagName == "INPUT" && element.type == "number") element.style.borderColor = "blue";
+                    button.onmousedown = () =>{
+                        keyBlock = li;
+            
+                        ["setup", "input", "update", "render"].forEach(ting => {
+                            for (const block of document.getElementById(ting).children){
+                                for (const element of block.children){
+                                    if (element.type == "tel") element.style.borderColor = "blue";
+                                }
                             }
-                        }
-                    })
-                }
-
-                button.onmouseup = () => {
-
-                    mathBlock = "";
-
-                    ["setup", "input", "update", "render"].forEach(ting => {
-                        for (const block of document.getElementById(ting).children){
-                            for (const element of block.children){
-                                if (element.tagName == "INPUT" && element.type == "number") element.style.borderColor = "";
+                        })
+                    }
+        
+                    button.onmouseup = () =>{
+                        keyBlock = "";
+            
+                        ["setup", "input", "update", "render"].forEach(ting => {
+                            for (const block of document.getElementById(ting).children){
+                                for (const element of block.children){
+                                    if (element.type == "tel") element.style.borderColor = "";
+                                }
                             }
-                        }
-                    })
+                        })
+                    }
                 }
         }
 
@@ -530,43 +585,71 @@ function update_panel(inner)
             button.onmousedown = () =>{
                 keyBlock = li;
     
-                ["setup", "input", "update", "render"].forEach(ting => {
-                    for (const block of document.getElementById(ting).children){
-                        for (const element of block.children){
-                            if (element.type == "tel") element.style.borderColor = "blue";
-                        }
-                    }
-                })
+                highlight("blue");
             }
 
             button.onmouseup = () =>{
                 keyBlock = "";
     
-                ["setup", "input", "update", "render"].forEach(ting => {
-                    for (const block of document.getElementById(ting).children){
-                        for (const element of block.children){
-                            if (element.type == "tel") element.style.borderColor = "";
-                        }
-                    }
-                })
+                highlight("");
             }
         }
 
         if (inner == "Logic"){
-            button.onclick = () => {
-                const copy = li.cloneNode(true);
+            button.className = "condition";
+            if (button.textContent != "Not " && button.textContent != "And " && button.textContent != "Or "){
+                button.onclick = () => {
+                    const copy = li.cloneNode(true);
+    
+                    copy.querySelector('button').addEventListener("mousedown", function(event){
+                        event.preventDefault();
+                        if (event.button == 0)
+                        {
+                            if (typeof(codeSection) == "string" && codeSection != ""){
+                                document.getElementById(codeSection[0].toUpperCase() + codeSection.slice(1)).querySelector("button").style.backgroundColor = "";
+                            } else if (codeSection != "") codeSection.querySelector("button").style.backgroundColor = "";
+                            copy.querySelector("button").style.backgroundColor = "rgb(200, 200, 200)";
+                            codeSection = copy;
+                        }
+                        if (event.button == 1){
 
-                copy.querySelector('button').addEventListener("mousedown", function(event){
-                    event.preventDefault();
-                    console.log(event.button);
-                    if (event.button == 0) codeSection = copy;
-                    if (event.button == 1) copy.remove();
-                })
+                            if (copy.nextSibling){
+                                let stillIfs = true;
+                                let sibling = copy.nextSibling;
 
-                copy.querySelector("input").addEventListener("mouseup", (event) => mouse_entered_input(event));
+                                while (stillIfs == true){
+                                    let nextSibling = sibling.nextSibling;
 
-                document.getElementById(codeSection).appendChild(copy);
-            };
+                                    if (sibling.style.marginLeft == "5%"){
+                                        sibling.remove();
+                                        sibling = nextSibling;
+                                    } else stillIfs = false;
+                                }
+                            }
+
+                            copy.remove();
+                        }
+                    })
+    
+                    copy.querySelector("input").addEventListener("mouseup", (event) => mouse_entered_input(event));
+    
+                    document.getElementById(codeSection).appendChild(copy);
+                };
+            } else{
+                button.onmousedown = () => {
+                    operatorBlock = button;
+                    highlight("blue");
+                }
+
+                button.onmouseup = () => {
+                    operatorBlock = "";
+                    highlight("");
+                }
+            }
+        }
+
+        if (inner == "Loops"){
+            button.className = "condition";
         }
         
         if (inner == "Render"){
@@ -582,7 +665,6 @@ function update_panel(inner)
 
                 copy.querySelector('button').addEventListener("mousedown", function(event){
                     event.preventDefault();
-                    console.log(event.button);
                     if (event.button == 1) copy.remove();
                 })
                 document.getElementById(codeSection).appendChild(copy);
@@ -604,7 +686,6 @@ function update_panel(inner)
                 copy.querySelector("input").addEventListener("change", event => add_variable(event));
                 copy.querySelector('button').addEventListener("mousedown", function(event){
                     event.preventDefault();
-                    console.log(event.button);
                     if (event.button == 1) copy.remove();
                 })
 
@@ -626,11 +707,9 @@ function update_panel(inner)
                 copy.querySelector("select").addEventListener("change", event => chosen_set_variable(event));
                 copy.querySelector('button').addEventListener("mousedown", function(event){
                     event.preventDefault();
-                    console.log(event.button);
                     if (event.button == 1) copy.remove();
                 })
 
-                console.log(codeSection);
                 if (typeof(codeSection) !== "string"){
                     codeSection.parentElement.insertBefore(copy, codeSection.nextSibling);
                     copy.style.marginLeft = "5%";

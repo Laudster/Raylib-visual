@@ -4,6 +4,7 @@ html, body
     -webkit-user-select: none; /* Safari */
     -ms-user-select: none; /* IE 10 and IE 11 */
     user-select: none; /* Standard syntax */
+    overflow-x: hidden;
 }
 
 #container {
@@ -64,6 +65,14 @@ html, body
     border-radius: 5px;
 }
 
+#coding li button.condition
+{
+    width: 20%;
+    margin-bottom: 3%;
+    padding: 1%;
+    border-radius: 5px;
+}
+
 #coding button{margin-bottom: 15%;}
 
 #coding button:hover
@@ -91,7 +100,12 @@ input[placeholder="text"]
     width: 10%;
 }
 
-#codeblocks input[placeholder="text"]
+#codeblocks input[placeholder="text"] 
+{
+    width: 10%;
+}
+
+#codeblocks input[type="tel"]
 {
     width: 10%;
 }
