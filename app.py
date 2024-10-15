@@ -35,10 +35,7 @@ def processCode(codeblocks):
             inputCode += "}"
             print(codeblock)
 
-        if "Set variable" in codeblock:
-            if isInIfStatement: beguneIf = True
-
-        setupCode = setVariable(setupCode, isInIfStatement, variables, codeblock)
+        setupCode, isInIfStatement = setVariable(setupCode, isInIfStatement, variables, codeblock, 1)
         
         if "Create variable" in codeblock:
             #Create variable: text;"test";"test text";
@@ -123,11 +120,8 @@ def processCode(codeblocks):
             isInIfStatement = False
             inputCode += "}"
             print(codeblock)
-        
-        if "Set variable" in codeblock:
-            if isInIfStatement: beguneIf = True
     
-        inputCode = setVariable(inputCode, isInIfStatement, variables, codeblock)
+        inputCode, isInIfStatement = setVariable(inputCode, isInIfStatement, variables, codeblock, 2)
 
         if "If" in codeblock:
             isInIfStatement = True
@@ -194,11 +188,8 @@ def processCode(codeblocks):
             isInIfStatement = False
             updateCode += "}"
             print(codeblock)
-
-        if "Set variable" in codeblock:
-            if isInIfStatement: beguneIf = True
     
-        updateCode = setVariable(updateCode, isInIfStatement, variables, codeblock)
+        updateCode, isInIfStatement = setVariable(updateCode, isInIfStatement, variables, codeblock, 2)
 
         if "If" in codeblock:
             isInIfStatement = True
@@ -259,13 +250,10 @@ def processCode(codeblocks):
     for codeblock in render:
         if not "tab" in codeblock and isInIfStatement == True and beguneIf == True:
             isInIfStatement = False
-            inputCode += "}"
+            renderCode += "}"
             print(codeblock)
-        
-        if "Set variable" in codeblock:
-            if isInIfStatement: beguneIf = True
 
-        renderCode = setVariable(renderCode, isInIfStatement, variables, codeblock)
+        renderCode, isInIfStatement = setVariable(renderCode, isInIfStatement, variables, codeblock, 3)
 
         if "Draw Rectangle" in codeblock:
             splits = codeblock.split(": ")[1].split(";")
@@ -296,6 +284,38 @@ def processCode(codeblocks):
             else:
                 renderCode += f"\n\t\t\tDrawText({value}, {splits[1]}, {splits[2]}, {splits[3]}, GetColor(0x{splits[4][1:len(splits[4])]}ff));"
         
+        if "Create variable" in codeblock:
+            #Create variable: text;"test";"test text";
+            splits = codeblock.split(":")[1].split(";")
+
+            if splits[0].replace(" ", "") == "text":
+                name = splits[1].replace(" ", "")
+                value = splits[2]
+                renderCode += f"\n\t\t\tchar {name}[20] = \"{value}\";"
+
+                variables[name] = "text"
+            
+            elif splits[0].replace(" ", "") == "color":
+                name = splits[1].replace(" ", "")
+                value = splits[2]
+                renderCode += f"\n\t\t\tColor {name} = GetColor(0x{value[1: len(value)]}ff);"
+
+                variables[name] = "color"
+            elif splits[0].replace(" ", "") == "number":
+                name = splits[1].replace(" ", "")
+                value = splits[2]
+                renderCode += f"\n\t\t\tint {name} = {value};"
+
+                variables[name] = "number"
+            else:
+                print(splits[0].replace(" ", ""))
+
+        if "Loop" in codeblock:
+            isInIfStatement = True
+            beguneIf = True
+
+            renderCode += "\n\t\t\tfor (int thisvariablewillnevereverbeusedbyuser = 0; thisvariablewillnevereverbeusedbyuser <" + codeblock.split(":")[1].replace(" ", "") + " thisvariablewillnevereverbeusedbyuser++){"
+
         if "If" in codeblock:
             isInIfStatement = True
             beguneIf = True

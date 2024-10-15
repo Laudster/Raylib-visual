@@ -682,6 +682,46 @@ function update_panel(inner)
 
         if (inner == "Loops"){
             button.className = "condition";
+
+            button.onclick = () => {
+                const copy = li.cloneNode(true);
+    
+                copy.querySelector('button').addEventListener("mousedown", function(event){
+                    event.preventDefault();
+                    if (event.button == 0)
+                    {
+                        if (typeof(codeSection) == "string" && codeSection != ""){
+                            document.getElementById(codeSection[0].toUpperCase() + codeSection.slice(1)).querySelector("button").style.backgroundColor = "";
+                        } else if (codeSection != "") codeSection.querySelector("button").style.backgroundColor = "";
+                        copy.querySelector("button").style.backgroundColor = "rgb(200, 200, 200)";
+                        codeSection = copy;
+                    }
+                    if (event.button == 1){
+
+                        if (copy.nextSibling){
+                            let stillIfs = true;
+                            let sibling = copy.nextSibling;
+
+                            while (stillIfs == true){
+                                let nextSibling = sibling.nextSibling;
+
+                                if (sibling.style.marginLeft == "5%"){
+                                    sibling.remove();
+                                    sibling = nextSibling;
+                                } else stillIfs = false;
+
+                                if (!nextSibling) stillIfs = false;
+                            }
+                        }
+
+                        copy.remove();
+                    }
+                })
+    
+                if (copy.querySelector("input")) copy.querySelector("input").addEventListener("mouseup", (event) => mouse_entered_input(event));
+    
+                document.getElementById(codeSection).appendChild(copy);
+            };
         }
         
         if (inner == "Render"){
@@ -699,7 +739,7 @@ function update_panel(inner)
                     event.preventDefault();
                     if (event.button == 1) copy.remove();
                 })
-                
+
                 addtocode(copy);
             };
         }
