@@ -77,7 +77,7 @@ def processCode(codeblocks):
 
                 setupCode += "\n\t\tif (IsKeyDown("+ key + ")){"
 
-            if "==" in codeblock:
+            if "==" in codeblock or "<" in codeblock or ">" in codeblock or "!=" in codeblock:
                 #'If: Not 0;== 1;
                 if "Not" in codeblock:
                     splits = codeblock[codeblock.index("t") + 2: len(codeblock)].split(";")
@@ -104,6 +104,28 @@ def processCode(codeblocks):
             isInIfStatement = True
             beguneIf = True
             setupCode += "\n\t\telse{"
+        
+        if "While" in codeblock:
+            isInIfStatement = True
+            beguneIf = True
+
+            if "==" in codeblock or "<" in codeblock or ">" in codeblock or "!=" in codeblock:
+                if "Not" in codeblock:
+                    splits = codeblock[codeblock.index("t") + 2: len(codeblock)].split(";")
+                    print(splits)
+                    value = ""
+                    for i in range(1, len(splits)):
+                        value += splits[i].replace(" ", "").replace("Or", "||").replace("And", "&&").replace("Not", "!")
+                    
+                    setupCode += "\n\t\twhile (!" + splits[0].replace(" ", "") + value + "){"
+                else:
+                    splits = codeblock.split(":")[1].split(";")
+                    if splits[0].replace(" ", "").isnumeric() or splits[0].replace(" ", "") in variables and variables[splits[0].replace(" ", "")] == "number":
+                        value = ""
+                        for i in range(1, len(splits)):
+                            value += splits[i].replace(" ", "").replace("Or", "||").replace("And", "&&")
+                        
+                        setupCode += "\n\t\twhile (" + splits[0].replace(" ", "") + value + "){"
 
     
     if isInIfStatement == True: setupCode += "}"
@@ -144,7 +166,7 @@ def processCode(codeblocks):
 
                 inputCode += "\n\t\tif (IsMouseButtonPressed("+ key + ")){"
 
-            if "==" in codeblock:
+            if "==" in codeblock or "<" in codeblock or ">" in codeblock or "!=" in codeblock:
                 #'If: Not 0;== 1;
                 if "Not" in codeblock:
                     splits = codeblock[codeblock.index("t") + 2: len(codeblock)].split(";")
@@ -171,6 +193,28 @@ def processCode(codeblocks):
             isInIfStatement = True
             beguneIf = True
             inputCode += "\n\t\telse{"
+        
+        if "While" in codeblock:
+            isInIfStatement = True
+            beguneIf = True
+
+            if "==" in codeblock or "<" in codeblock or ">" in codeblock or "!=" in codeblock:
+                if "Not" in codeblock:
+                    splits = codeblock[codeblock.index("t") + 2: len(codeblock)].split(";")
+                    print(splits)
+                    value = ""
+                    for i in range(1, len(splits)):
+                        value += splits[i].replace(" ", "").replace("Or", "||").replace("And", "&&").replace("Not", "!")
+                    
+                    inputCode += "\n\t\twhile (!" + splits[0].replace(" ", "") + value + "){"
+                else:
+                    splits = codeblock.split(":")[1].split(";")
+                    if splits[0].replace(" ", "").isnumeric() or splits[0].replace(" ", "") in variables and variables[splits[0].replace(" ", "")] == "number":
+                        value = ""
+                        for i in range(1, len(splits)):
+                            value += splits[i].replace(" ", "").replace("Or", "||").replace("And", "&&")
+                        
+                        inputCode += "\n\t\twhile (" + splits[0].replace(" ", "") + value + "){"
 
     
     if isInIfStatement == True:
@@ -210,7 +254,7 @@ def processCode(codeblocks):
 
                 updateCode += "\n\t\tif (IsMouseButtonPressed("+ key + ")){"
 
-            if "==" in codeblock:
+            if "==" in codeblock or "<" in codeblock or ">" in codeblock or "!=" in codeblock:
                 #'If: Not 0;== 1;
                 if "Not" in codeblock:
                     splits = codeblock[codeblock.index("t") + 2: len(codeblock)].split(";")
@@ -237,6 +281,28 @@ def processCode(codeblocks):
             isInIfStatement = True
             beguneIf = True
             updateCode += "\n\t\telse{"
+        
+        if "While" in codeblock:
+            isInIfStatement = True
+            beguneIf = True
+
+            if "==" in codeblock or "<" in codeblock or ">" in codeblock or "!=" in codeblock:
+                if "Not" in codeblock:
+                    splits = codeblock[codeblock.index("t") + 2: len(codeblock)].split(";")
+                    print(splits)
+                    value = ""
+                    for i in range(1, len(splits)):
+                        value += splits[i].replace(" ", "").replace("Or", "||").replace("And", "&&").replace("Not", "!")
+                    
+                    updateCode += "\n\t\twhile (!" + splits[0].replace(" ", "") + value + "){"
+                else:
+                    splits = codeblock.split(":")[1].split(";")
+                    if splits[0].replace(" ", "").isnumeric() or splits[0].replace(" ", "") in variables and variables[splits[0].replace(" ", "")] == "number":
+                        value = ""
+                        for i in range(1, len(splits)):
+                            value += splits[i].replace(" ", "").replace("Or", "||").replace("And", "&&")
+                        
+                        updateCode += "\n\t\twhile (" + splits[0].replace(" ", "") + value + "){"
 
     
     if isInIfStatement == True: updateCode += "}"
@@ -257,13 +323,49 @@ def processCode(codeblocks):
 
         if "Draw Rectangle" in codeblock:
             splits = codeblock.split(": ")[1].split(";")
+            value = []
+            argument = ""
+
+            for v in splits:
+                if len(v) > 0:
+                    if v[0].isnumeric():
+                        if argument == "": value.append(v)
+                        else:
+                            argument += v
+                            value.append(argument)
+                    elif v[0] == "#" or not v[0] in "+-*/": value.append(v)
+                    else:
+                        if argument == "":
+                            if len(value) > 0:
+                                value[len(value) - 1] += v
+                            else:
+                                value.append(v)
+                        else: argument += v
+            
+            print(value)
+
             if isInIfStatement == True:
-                renderCode += f"DrawRectangle({splits[0]}, {splits[1]}, {splits[2]}, {splits[3]}, GetColor(0x{splits[4][1:len(splits[4])]}ff));"
+                renderCode += f"DrawRectangle({value[0]}, {value[1]}, {value[2]}, {value[3]}, GetColor(0x{value[4][1:len(value[4])]}ff));"
             else:
-                renderCode += f"\n\t\t\tDrawRectangle({splits[0]}, {splits[1]}, {splits[2]}, {splits[3]}, GetColor(0x{splits[4][1:len(splits[4])]}ff));"
+                renderCode += f"\n\t\t\tDrawRectangle({value[0]}, {value[1]}, {value[2]}, {value[3]}, GetColor(0x{value[4][1:len(value[4])]}ff));"
         
         if "Draw Circle" in codeblock:
             splits = codeblock.split(": ")[1].split(";")
+            value = []
+            argument = ""
+
+            for v in splits:
+                if len(v) > 0:
+                    if v[0].isnumeric():
+                        if argument == "": value.append(v)
+                        else:
+                            argument += v
+                            value.append(argument)
+                    elif v[0] == "#": value.append(v)
+                    else:
+                        if argument == "": value[len(value) - 1] += v
+                        else: argument += v
+            
             if isInIfStatement == True:
                 renderCode += f"DrawCircle({splits[0]}, {splits[1]}, {splits[2]}, GetColor(0x{splits[4][1:len(splits[4])]}ff));"
             else:
@@ -273,6 +375,21 @@ def processCode(codeblocks):
             #Draw Text: 0 0 0 0 #000000 
             splits = codeblock.split(": ")[1].split(";")
             value = splits[0]
+            value = []
+            argument = ""
+
+            for v in splits:
+                if len(v) > 0:
+                    if v[0].isnumeric():
+                        if argument == "": value.append(v)
+                        else:
+                            argument += v
+                            value.append(argument)
+                    elif v[0] == "#": value.append(v)
+                    else:
+                        if argument == "": value[len(value) - 1] += v
+                        else: argument += v
+
             if splits[0] in variables:
                 if variables[splits[0]] == "number":
                     value = f'TextFormat("%i", {splits[0]})'
@@ -290,20 +407,26 @@ def processCode(codeblocks):
 
             if splits[0].replace(" ", "") == "text":
                 name = splits[1].replace(" ", "")
-                value = splits[2]
+                value = ""
+                for i in range(2, len(splits)):
+                    value += splits[i]
                 renderCode += f"\n\t\t\tchar {name}[20] = \"{value}\";"
 
                 variables[name] = "text"
             
             elif splits[0].replace(" ", "") == "color":
                 name = splits[1].replace(" ", "")
-                value = splits[2]
+                value = ""
+                for i in range(2, len(splits)):
+                    value += splits[i]
                 renderCode += f"\n\t\t\tColor {name} = GetColor(0x{value[1: len(value)]}ff);"
 
                 variables[name] = "color"
             elif splits[0].replace(" ", "") == "number":
                 name = splits[1].replace(" ", "")
-                value = splits[2]
+                value = ""
+                for i in range(2, len(splits)):
+                    value += splits[i]
                 renderCode += f"\n\t\t\tint {name} = {value};"
 
                 variables[name] = "number"
@@ -330,7 +453,7 @@ def processCode(codeblocks):
 
                 renderCode += "\n\t\tif (IsKeyDown("+ key + ")){"
 
-            if "==" in codeblock:
+            if "==" in codeblock or "<" in codeblock or ">" in codeblock or "!=" in codeblock:
                 #'If: Not 0;== 1;
                 if "Not" in codeblock:
                     splits = codeblock[codeblock.index("t") + 2: len(codeblock)].split(";")
@@ -357,6 +480,28 @@ def processCode(codeblocks):
             isInIfStatement = True
             beguneIf = True
             renderCode += "\n\t\telse{"
+        
+        if "While" in codeblock:
+            isInIfStatement = True
+            beguneIf = True
+
+            if "==" in codeblock or "<" in codeblock or ">" in codeblock or "!=" in codeblock:
+                if "Not" in codeblock:
+                    splits = codeblock[codeblock.index("t") + 2: len(codeblock)].split(";")
+                    print(splits)
+                    value = ""
+                    for i in range(1, len(splits)):
+                        value += splits[i].replace(" ", "").replace("Or", "||").replace("And", "&&").replace("Not", "!")
+                    
+                    renderCode += "\n\t\twhile (!" + splits[0].replace(" ", "") + value + "){"
+                else:
+                    splits = codeblock.split(":")[1].split(";")
+                    if splits[0].replace(" ", "").isnumeric() or splits[0].replace(" ", "") in variables and variables[splits[0].replace(" ", "")] == "number":
+                        value = ""
+                        for i in range(1, len(splits)):
+                            value += splits[i].replace(" ", "").replace("Or", "||").replace("And", "&&")
+                        
+                        renderCode += "\n\t\twhile (" + splits[0].replace(" ", "") + value + "){"
 
     if isInIfStatement == True: renderCode += "}"
 

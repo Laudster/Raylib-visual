@@ -21,6 +21,7 @@ int main()
     while (!WindowShouldClose())
     {
         //Input
+		while (0==0){ defaultColour = GetColor(0x000000ff);}
 
 
         //Update
@@ -28,9 +29,6 @@ int main()
 
         BeginDrawing();
             ClearBackground(defaultColour);			
-			int i = 0;
-			for (int thisvariablewillnevereverbeusedbyuser = 0; thisvariablewillnevereverbeusedbyuser <10; thisvariablewillnevereverbeusedbyuser++){ i = i+ 1;
-			int y = 0; y = i* 20;DrawRectangle(50, y, 10, 10, GetColor(0x000000ff));}
         EndDrawing();
     }
     

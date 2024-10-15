@@ -17,7 +17,7 @@ const codeblocks = {
     "Input": ["IsKeyDown: (keycode)", "IsMouseDown: (mousebutton)"],
     "Logic": ["If: (statement)", "Else If: (statement)", "Else", "And", "Or", "Not"],
     "Loops": ["Loop: (number)", "While: (statement)"],
-    "Math": ["(number) + (number)", "(number) - (number)", "(number) * (number)", "(number) : (number)", "(number) == (number)", "(text) == (text)"],
+    "Math": ["(number) + (number)", "(number) - (number)", "(number) * (number)", "(number) : (number)", "(number) == (number)", "(number) != (number)", "(number) < (number)", "(number) > (number)"],
     "Variables": ["Create variable: (assignvalue) (variable)", "Set variable: (thevariable) (value)"]}
 
 let variables = {"defaultColour": "0x000000ff", "FPS": 60, "title": "Game"};
@@ -557,7 +557,7 @@ function update_panel(inner)
         {
                 button.className = "short";
 
-                if (button.textContent.replace(" ", "") != "=="){
+                if (button.textContent.replace(" ", "") != "==" && button.textContent.replace(" ", "") != "<" && button.textContent.replace(" ", "") != ">" && button.textContent.replace(" ", "") != "!="){
                     button.onmousedown = () =>
                         {
                             mathBlock = button.parentElement;
@@ -628,7 +628,7 @@ function update_panel(inner)
         if (inner == "Logic"){
             button.className = "condition";
             if (button.textContent != "Not " && button.textContent != "And " && button.textContent != "Or "){
-                button.onclick = () => {
+                button.onmousedown = () => {
                     const copy = li.cloneNode(true);
     
                     copy.querySelector('button').addEventListener("mousedown", function(event){
@@ -683,7 +683,7 @@ function update_panel(inner)
         if (inner == "Loops"){
             button.className = "condition";
 
-            button.onclick = () => {
+            button.onmousedown = () => {
                 const copy = li.cloneNode(true);
     
                 copy.querySelector('button').addEventListener("mousedown", function(event){
@@ -725,7 +725,7 @@ function update_panel(inner)
         }
         
         if (inner == "Render"){
-            button.onclick = () => {
+            button.onmousedown = () => {
                 const copy = li.cloneNode(true);
     
                 for (const c of copy.children)
@@ -745,7 +745,7 @@ function update_panel(inner)
         }
 
         if (addons.includes("variable")){
-            button.onclick = () => {
+            button.onmousedown = () => {
                 const copy = li.cloneNode(true);
 
                 for (const c of copy.children)
@@ -767,7 +767,7 @@ function update_panel(inner)
         }
 
         if (addons.includes("thevariable")){
-            button.onclick = () => {
+            button.onmousedown = () => {
                 const copy = li.cloneNode(true);
 
                 for (const c of copy.children)
