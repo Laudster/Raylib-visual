@@ -15,7 +15,7 @@ let codeSection = "";
 const codeblocks = {
     "Render": ["Draw Rectangle: (number) (number) (number) (number) (color)", "Draw Circle: (number) (number) (number) (color)", "Draw Text: (text) (number) (number) (number) (color)"],
     "Input": ["IsKeyDown: (keycode)", "IsMouseDown: (mousebutton)"],
-    "Logic": ["If: (statement)", "Else", "Else If: (statement)", "And", "Or", "Not"],
+    "Logic": ["If: (statement)", "Else If: (statement)", "Else", "And", "Or", "Not"],
     "Loops": ["Loop: (number)", "While: (statement)"],
     "Math": ["(number) + (number)", "(number) - (number)", "(number) * (number)", "(number) : (number)", "(number) == (number)", "(text) == (text)"],
     "Variables": ["Create variable: (assignvalue) (variable)", "Set variable: (thevariable) (value)"]}
@@ -31,6 +31,36 @@ function isHex(inputString)
 	} else {
 		return false
 	}
+}
+
+function addtocode(copy){
+
+    if (typeof(codeSection) !== "string"){
+        let stillIfs = true;
+        let sibling = codeSection.nextSibling;
+
+        if (sibling){
+            while (stillIfs == true){
+                console.log(sibling);
+                let nextSibling = sibling.nextSibling;
+        
+                if (sibling.style.marginLeft == "5%"){
+                    if (nextSibling) sibling = nextSibling;
+                } else stillIfs = false;
+        
+                if (!nextSibling) stillIfs = false;
+            }
+        }
+
+        console.log(sibling);
+        if (sibling != null){
+            codeSection.parentElement.insertBefore(copy, sibling.nextSibling);
+            console.log(sibling);
+        }
+        else codeSection.parentElement.insertBefore(copy, codeSection.nextSibling);
+        copy.style.marginLeft = "5%";
+    }
+    else document.getElementById(codeSection).appendChild(copy);    
 }
 
 function highlight(color){
@@ -624,6 +654,8 @@ function update_panel(inner)
                                         sibling.remove();
                                         sibling = nextSibling;
                                     } else stillIfs = false;
+
+                                    if (!nextSibling) stillIfs = false;
                                 }
                             }
 
@@ -631,7 +663,7 @@ function update_panel(inner)
                         }
                     })
     
-                    copy.querySelector("input").addEventListener("mouseup", (event) => mouse_entered_input(event));
+                    if (copy.querySelector("input")) copy.querySelector("input").addEventListener("mouseup", (event) => mouse_entered_input(event));
     
                     document.getElementById(codeSection).appendChild(copy);
                 };
@@ -667,7 +699,8 @@ function update_panel(inner)
                     event.preventDefault();
                     if (event.button == 1) copy.remove();
                 })
-                document.getElementById(codeSection).appendChild(copy);
+                
+                addtocode(copy);
             };
         }
 
@@ -689,7 +722,7 @@ function update_panel(inner)
                     if (event.button == 1) copy.remove();
                 })
 
-                document.getElementById(codeSection).appendChild(copy);
+                addtocode(copy);
             };
         }
 
@@ -710,11 +743,7 @@ function update_panel(inner)
                     if (event.button == 1) copy.remove();
                 })
 
-                if (typeof(codeSection) !== "string"){
-                    codeSection.parentElement.insertBefore(copy, codeSection.nextSibling);
-                    copy.style.marginLeft = "5%";
-                }
-                else document.getElementById(codeSection).appendChild(copy);
+                addtocode(copy);
             };
         }
 

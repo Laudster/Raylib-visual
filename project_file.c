@@ -16,6 +16,8 @@ char title[20] = "Game";
 int main()
 {
     //Setup
+	int change = 0;
+	int color = 0;
 
 
     SetTraceLogLevel(LOG_ERROR);
@@ -26,10 +28,17 @@ int main()
     while (!WindowShouldClose())
     {
         //Input
-		if (!1==0&&!2==0){ defaultColour = GetColor(0x000000ff);}
+		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+		 change = 1;}
 
 
         //Update
+		if (change==1&&color==0){ defaultColour = GetColor(0x000000ff);
+		 color = 1;
+		 change = 0;}
+		if (change==1&&color==1){ defaultColour = GetColor(0xffffffff);
+		 color = 0;
+		 change = 0;}
 
 
         BeginDrawing();
