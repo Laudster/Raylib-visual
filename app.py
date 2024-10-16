@@ -21,6 +21,29 @@ def processCode(codeblocks):
     setupCode = ""
 
     print(codeblocks)
+    for code in codeblocks:
+        if len(codeblocks.get(code)) > 0:
+            actualCode = codeblocks.get(code)
+            for block in actualCode:
+                if "RND" in block:
+                    indeks = block.index("RND")
+                    minnum = ""
+                    
+                    i = indeks - 2
+                    while block[i] != " " and block[i] != ";":
+                        minnum += block[i]
+                        i -= 1
+                    
+                    maxnum = ""
+                    
+                    i = indeks + 4
+                    while block[i] != ";":
+                        maxnum += block[i]
+                        i += 1
+                    
+                    print(block)
+
+                    codeblocks.get(code)[codeblocks.get(code).index(block)] = block[0:indeks-1 - len(minnum)] + f"randint({minnum[::-1]}, {maxnum});" + block[indeks + 8: len(block)]
 
     variables = {"defaultColour": "color", "FPS": "number", "title": "text"}
 
@@ -322,6 +345,7 @@ def processCode(codeblocks):
         renderCode, isInIfStatement = setVariable(renderCode, isInIfStatement, variables, codeblock, 3)
 
         if "Draw Rectangle" in codeblock:
+            print(codeblock)
             splits = codeblock.split(": ")[1].split(";")
             value = []
             argument = ""
@@ -361,9 +385,13 @@ def processCode(codeblocks):
                         else:
                             argument += v
                             value.append(argument)
-                    elif v[0] == "#": value.append(v)
+                    elif v[0] == "#" or not v[0] in "+-*/": value.append(v)
                     else:
-                        if argument == "": value[len(value) - 1] += v
+                        if argument == "":
+                            if len(value) > 0:
+                                value[len(value) - 1] += v
+                            else:
+                                value.append(v)
                         else: argument += v
             
             if isInIfStatement == True:
@@ -385,9 +413,13 @@ def processCode(codeblocks):
                         else:
                             argument += v
                             value.append(argument)
-                    elif v[0] == "#": value.append(v)
+                    elif v[0] == "#" or not v[0] in "+-*/": value.append(v)
                     else:
-                        if argument == "": value[len(value) - 1] += v
+                        if argument == "":
+                            if len(value) > 0:
+                                value[len(value) - 1] += v
+                            else:
+                                value.append(v)
                         else: argument += v
 
             if splits[0] in variables:

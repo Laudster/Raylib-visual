@@ -17,7 +17,7 @@ const codeblocks = {
     "Input": ["IsKeyDown: (keycode)", "IsMouseDown: (mousebutton)"],
     "Logic": ["If: (statement)", "Else If: (statement)", "Else", "And", "Or", "Not"],
     "Loops": ["Loop: (number)", "While: (statement)"],
-    "Math": ["(number) + (number)", "(number) - (number)", "(number) * (number)", "(number) : (number)", "(number) == (number)", "(number) != (number)", "(number) < (number)", "(number) > (number)"],
+    "Math": ["(number) + (number)", "(number) - (number)", "(number) * (number)", "(number) : (number)", "(number) RND (number)", "(number) == (number)", "(number) != (number)", "(number) < (number)", "(number) > (number)"],
     "Variables": ["Create variable: (assignvalue) (variable)", "Set variable: (thevariable) (value)"]}
 
 let variables = {"defaultColour": "0x000000ff", "FPS": 60, "title": "Game"};
@@ -39,23 +39,34 @@ function addtocode(copy){
         let stillIfs = true;
         let sibling = codeSection.nextSibling;
 
+        let isLast = false;
+
         if (sibling){
+            for (let child of codeSection.parentElement.children){
+                if (child.querySelector("button").textContent == codeSection.textContent){
+                    if (child == codeSection) isLast = true
+                    else isLast = false;
+                }
+            }
+
             while (stillIfs == true){
-                console.log(sibling);
                 let nextSibling = sibling.nextSibling;
+
         
                 if (sibling.style.marginLeft == "5%"){
-                    if (nextSibling) sibling = nextSibling;
+                    if (nextSibling){
+                        if (nextSibling.querySelector("button").textContent != "If") sibling = nextSibling;
+                    }
                 } else stillIfs = false;
         
                 if (!nextSibling) stillIfs = false;
             }
         }
 
-        console.log(sibling);
         if (sibling != null){
-            codeSection.parentElement.insertBefore(copy, sibling.nextSibling);
-            console.log(sibling);
+            console.log(isLast);
+            if (isLast == false) codeSection.parentElement.insertBefore(copy, sibling);
+            else codeSection.parentElement.insertBefore(copy, sibling.nextSibling);
         }
         else codeSection.parentElement.insertBefore(copy, codeSection.nextSibling);
         copy.style.marginLeft = "5%";

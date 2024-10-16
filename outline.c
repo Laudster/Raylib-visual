@@ -1,5 +1,6 @@
 #include "raylib.h"
 #include <stdlib.h>
+#include <time.h>
 #include <string.h>
 
 Color defaultColour = {255, 255, 255, 255};
@@ -8,8 +9,12 @@ int FPS = 60;
 
 char title[20] = "Game";
 
+int randint(int min, int max){return rand() % (max - min + 1);}
+
 int main()
 {
+    srand(time(NULL));
+
     //Setup
 
 
