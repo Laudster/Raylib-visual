@@ -18,9 +18,9 @@ int main()
     //Setup
 	int playerPos = 500;
 	int platformX = 2000;
-	int platformY = randint(100, 700);
-	int Dead = 0;
-	int Score = 0;
+	int platformSize = randint(20, 700);
+	int score = 0;
+	int dead = 0;
 
 
     SetTraceLogLevel(LOG_ERROR);
@@ -38,19 +38,18 @@ int main()
         //Update
 		 platformX = platformX- 10;
 		if (platformX<-50){
-		 platformY = randint(100, 700);
-		 platformX = 2000; Score = Score+ 1;}
-		if (platformX==100&&playerPos<platformY||platformX==100&&playerPos>platformY+350){
-		 Dead = 1;}
+		 platformSize = randint(200, 700);
+		 platformX = 2000;}
+		if (platformX<101&&playerPos-50<platformSize||platformX<101&&playerPos--50>platformSize+350){
+		 dead = 1;}
 
 
         BeginDrawing();
             ClearBackground(defaultColour);			
-			DrawText(TextFormat("%i", Score), 800, 500, 200, GetColor(0x000000ff));
 			DrawCircle(100, playerPos, 50, GetColor(0xff));
-			DrawRectangle(platformX, 0, 50, platformY, GetColor(0xd63d3dff));
-			DrawRectangle(platformX, platformY+ 350, 50, 2000, GetColor(0xf13d3dff));
-		if (Dead==1){DrawRectangle(0, 0, 2000, 2000, GetColor(0x000000ff));}
+			DrawRectangle(platformX, 0, 50, platformSize, GetColor(0xff0000ff));
+			DrawRectangle(platformX, platformSize+ 350, 50, 2000, GetColor(0xff0000ff));
+		if (dead==1){DrawRectangle(0, 0, 2000, 2000, GetColor(0x000000ff));}
         EndDrawing();
     }
     
