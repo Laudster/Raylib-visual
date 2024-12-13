@@ -1,9 +1,11 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, send_file, request
 from flask_socketio  import SocketIO
 from subprocess import Popen, run, CalledProcessError
 from time import sleep
+from shutil import rmtree
+from zipfile import ZipFile
 from processors import setVariable
-import os
+import os, io
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "Hemmelig"
@@ -14,8 +16,25 @@ socket = SocketIO(app)
 def start():
     return render_template("index.html")
  
+@app.route("/files")
+def file_download():
+    compiled_files = "web-build"
 
-def processCode(codeblocks):
+    if not os.path.exists(compiled_files):
+        return "error"
+    
+    zip_buffer = io.BytesIO()
+    with ZipFile(zip_buffer, "w") as zip_file:
+        for file_name in os.listdir(compiled_files):
+            file_path = os.path.join(compiled_files, file_name)
+            if os.path.isfile(file_path):
+                zip_file.write(file_path, file_name)
+    
+    zip_buffer.seek(0)
+
+    return send_file(zip_buffer, mimetype="application/zip", as_attachment=True, download_name="compiled_files.zip")
+
+def processCode(codeblocks, folder):
     
     setup = codeblocks.get("setup")
     setupCode = ""
@@ -546,24 +565,28 @@ def processCode(codeblocks):
         projectCode = projectCode.replace("//Update", "//Update" + updateCode)
         projectCode = projectCode.replace("ClearBackground(defaultColour);", "ClearBackground(defaultColour);\t\t\t" + renderCode)
             
-    with open("project_file.c", "w") as file:
+    with open(f"{folder}/project_file.c", "w") as file:
         file.write(projectCode)
         
 
 @socket.on("build")
 def build(code):
-    processCode(code)
+    if not os.path.exists(request.sid):
+        os.mkdir(request.sid)
+        os.mkdir(f"{request.sid}/web-build")
 
-    for file in os.listdir("web-build"):
-        if os.path.isfile(os.path.join("web-build", file)):
-            os.remove(os.path.join("web-build", file))
+    processCode(code, request.sid)
 
-    Popen(r"build.bat", shell=True)
+    for file in os.listdir(f"{request.sid}/web-build"):
+        if os.path.isfile(os.path.join(f"{request.sid}/web-build", file)):
+            os.remove(os.path.join(f"{request.sid}/web-build", file))
 
-    while not os.path.isfile("web-build/project.html"):
+    Popen(r"build.bat " + str(request.sid), shell=True)
+
+    while not os.path.isfile(f"{request.sid}/web-build/project.html"):
         sleep(1)
 
-    socket.emit("build-finnished", "http://localhost:8000/project.html")
+    socket.emit("build-finnished", "http://localhost:8000/project.html", to=request.sid)
 
 @socket.on("shutdown")
 def shutdown(): # chatgpt løsning, fungerer men er litt for mye for en så enkel task og gir error etter å ha blitt ferdig
@@ -598,6 +621,11 @@ def shutdown(): # chatgpt løsning, fungerer men er litt for mye for en så enke
         print(f"Error occurred while trying to kill processes: {e}")
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
+
+@socket.on("disconnect")
+def disconnect():
+    if os.path.exists(request.sid):
+        rmtree(request.sid)
 
 
 
