@@ -66,8 +66,8 @@
             </div>
             
             <div id="config"></div>
-                <button onclick="build_project()" id="build"> Build </button>
-                <button onclick="open_project()" id="open"> Fullscreen </button>
+                <button onclick="build_project()" id="build"> Compile </button>
+                <a href="{{url_for("static", filename="compiler.exe")}}" download="compiler.exe" id="download"> <img id="downloadimg" alt="download compiler" src="{{url_for("static", filename="download.png")}}"></a>
             </div>
 
         </div>

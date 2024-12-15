@@ -149,29 +149,37 @@ input[placeholder="text"]
     cursor: pointer;
 }
 
+#download
+{
+    position: absolute;
+    left: 79%;
+    top: 48%;
+    width: 4%;
+    height: 10%;
+    padding: 0;
+    border: none;
+}
+
+#download img{
+    width: 100%;
+}
+
+#download:hover{
+    cursor: pointer;
+}
+
+#downloadimg
+{
+    width: 15%;
+    height: auto;
+}
+
 #codeblocks
 {
     position: absolute;
     top: 6.5%;
     left: 31%;
     width: 50%;
-}
-
-#open
-{
-    display: none;
-    background-image: linear-gradient(rgb(66, 135, 245), rgb(165, 191, 232));
-    position: absolute;
-    left: 76%;
-    top: 50%;
-    font-size: 200%;
-    border-radius: 4px;
-    transition: 0.5s;
-}
-
-#open:hover
-{
-    cursor: pointer;
 }
 
 ul

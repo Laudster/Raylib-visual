@@ -9,8 +9,6 @@ socket.on("disconnect", function(){
     socket.emit("disconnect");
 });
 
-let projectLink = "";
-
 let codeSection = "";
 
 const codeblocks = {
@@ -928,37 +926,24 @@ function show_codes(button)
 
 function build_project()
 {
-    if (projectLink != "")
-        {
-            projectLink = "";
-            document.getElementById("build").style.backgroundColor = "";
-            document.getElementById("open").style.display = "none";
-            socket.emit("shutdown");
+    socket.emit("build", processCodeblocks());
 
-            document.getElementById("display").children[0].remove();
-        } else
-        {
-            document.getElementById("build").style.backgroundColor = "rgb(27, 240, 27, 0.7)";
-
-            document.body.style.cursor = "wait";
-            document.getElementById("build").style.cursor = "wait";
-
-            socket.emit("build", processCodeblocks());
-        }
+    socket.emit("getSessId", function(sessID){
+        console.log(sessID);
+        window.open("raylibvisual://" + sessID, "_parent");
+    });
 }
 
-function open_project()
-{
-    window.open(projectLink);
-}
-
-socket.on("build-finnished", function(link){
+socket.on("build-finnished", function(){
     let iframe = document.createElement("iframe");
-    iframe.src = "http://localhost:8000/project.html";
+    iframe.src = "http://localhost:8001/project.html";
     document.getElementById("display").appendChild(iframe);
 
-    document.body.style.cursor = "";
-    document.getElementById("build").style.cursor = "pointer";
-    projectLink = link;
-    document.getElementById("open").style.display = "block";
+    document.getElementById("build").backgroundColor = "green";
+});
+
+socket.on("quit", function(){
+    console.log("remove");
+    document.getElementById("display").querySelector("iframe").remove();
+    document.getElementById("build").backgroundColor = "";
 });

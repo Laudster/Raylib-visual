@@ -16,9 +16,18 @@ socket = SocketIO(app)
 def start():
     return render_template("index.html")
  
-@app.route("/files")
-def file_download():
-    compiled_files = "web-build"
+@app.route("/compilingcheck/<sid>")
+def compilingcheck(sid):
+    if os.path.isfile(f"{sid}/web-build/project.html"):
+        return "done"
+    else:
+        return "compiling"
+
+@app.route("/files/<sessid>")
+def file_download(sessid):
+    compiled_files = sessid+"/web-build"
+
+    print(compiled_files)
 
     if not os.path.exists(compiled_files):
         return "error"
@@ -33,6 +42,14 @@ def file_download():
     zip_buffer.seek(0)
 
     return send_file(zip_buffer, mimetype="application/zip", as_attachment=True, download_name="compiled_files.zip")
+
+@app.route("/quit/<sessid>", methods=['DELETE'])
+def quit(sessid):
+    socket.emit("quit", to=sessid)
+    print("Sent signal to " + sessid)
+
+    return "doneso"
+
 
 def processCode(codeblocks, folder):
     
@@ -586,41 +603,11 @@ def build(code):
     while not os.path.isfile(f"{request.sid}/web-build/project.html"):
         sleep(1)
 
-    socket.emit("build-finnished", "http://localhost:8000/project.html", to=request.sid)
+    socket.emit("build-finnished", to=request.sid)
 
-@socket.on("shutdown")
-def shutdown(): # chatgpt løsning, fungerer men er litt for mye for en så enkel task og gir error etter å ha blitt ferdig
-    port = 8000
-    try:
-        # First, find the process ID using the specified port
-        netstat_command = f"netstat -ano | findstr :{port}"
-        result = run(netstat_command, capture_output=True, text=True, shell=True)
-
-        if result.stdout:
-            # Parse the output to get the process ID
-            lines = result.stdout.strip().split("\n")
-            for line in lines:
-                parts = line.split()
-                pid = parts[-1]  # The last column contains the PID
-                # Check if the process exists before attempting to kill it
-                check_command = f"tasklist /FI \"PID eq {pid}\""
-                check_result = run(check_command, capture_output=True, text=True, shell=True)
-                
-                if pid in check_result.stdout:
-                    # Kill the process using the PID
-                    kill_command = f"taskkill /PID {pid} /F"
-                    run(kill_command, check=True, shell=True)
-                    print(f"Successfully terminated process with PID {pid} using TCP port {port}.")
-                else:
-                    print(f"Process with PID {pid} is already terminated.")
-
-        else:
-            print(f"No processes found using TCP port {port}.")
-
-    except CalledProcessError as e:
-        print(f"Error occurred while trying to kill processes: {e}")
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
+@socket.on("getSessId")
+def getSessId():
+    return request.sid
 
 @socket.on("disconnect")
 def disconnect():
