@@ -6,7 +6,6 @@ socket.on("connect", function(){
 
 socket.on("disconnect", function(){
     console.log("disconnected");
-    socket.emit("disconnect");
 });
 
 let codeSection = "";

@@ -609,12 +609,5 @@ def build(code):
 def getSessId():
     return request.sid
 
-@socket.on("disconnect")
-def disconnect():
-    if os.path.exists(request.sid):
-        rmtree(request.sid)
-
-
-
 if __name__ == "__main__":
-    socket.run(app, debug=True)
+    socket.run(app, debug=False)
