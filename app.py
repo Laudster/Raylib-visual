@@ -1,6 +1,6 @@
 from flask import Flask, render_template, send_file, request
 from flask_socketio  import SocketIO
-from subprocess import Popen, run, CalledProcessError
+from subprocess import Popen
 from time import sleep
 from shutil import rmtree
 from zipfile import ZipFile
@@ -15,7 +15,7 @@ socket = SocketIO(app)
 @app.route("/")
 def start():
     return render_template("index.html")
- 
+
 @app.route("/compilingcheck/<sid>")
 def compilingcheck(sid):
     if os.path.isfile(f"{sid}/web-build/project.html"):
@@ -23,9 +23,9 @@ def compilingcheck(sid):
     else:
         return "compiling"
 
-@app.route("/files/<sessid>")
-def file_download(sessid):
-    compiled_files = sessid+"/web-build"
+@app.route("/files/<folder>")
+def file_download(folder):
+    compiled_files = folder+"/web-build"
 
     print(compiled_files)
 
@@ -41,11 +41,13 @@ def file_download(sessid):
     
     zip_buffer.seek(0)
 
+    rmtree(folder)
+
     return send_file(zip_buffer, mimetype="application/zip", as_attachment=True, download_name="compiled_files.zip")
 
 @app.route("/quit/<sessid>", methods=['DELETE'])
 def quit(sessid):
-    socket.emit("quit", to=sessid)
+    socket.emit("quit", sessid)
     print("Sent signal to " + sessid)
 
     return "doneso"
@@ -585,36 +587,30 @@ def processCode(codeblocks, folder):
     with open(f"{folder}/project_file.c", "w") as file:
         file.write(projectCode)
         
+@socket.on("nameinuse?")
+def nameinuse(name):
+    if not os.path.exists(name):
+        return "no"
+    else: return "yes"
 
 @socket.on("build")
-def build(code):
-    if not os.path.exists(request.sid):
-        os.mkdir(request.sid)
-        os.mkdir(f"{request.sid}/web-build")
+def build(data):
+    if not os.path.exists(data[1]):
+        os.mkdir(data[1])
+        os.mkdir(f"{data[1]}/web-build")
 
-    processCode(code, request.sid)
+    processCode(data[0], data[1])
 
-    for file in os.listdir(f"{request.sid}/web-build"):
-        if os.path.isfile(os.path.join(f"{request.sid}/web-build", file)):
-            os.remove(os.path.join(f"{request.sid}/web-build", file))
+    for file in os.listdir(f"{data[1]}/web-build"):
+        if os.path.isfile(os.path.join(f"{data[1]}/web-build", file)):
+            os.remove(os.path.join(f"{data[1]}/web-build", file))
 
-    Popen(r"build.bat " + str(request.sid), shell=True)
+    Popen(r"build.bat " + str(data[1]), shell=True)
 
-    while not os.path.isfile(f"{request.sid}/web-build/project.html"):
+    while not os.path.isfile(f"{data[1]}/web-build/project.html"):
         sleep(1)
 
-    socket.emit("build-finnished", to=request.sid)
-
-@socket.on("getSessId")
-def getSessId():
-    return request.sid
-
-@socket.on("disconnect")
-def disconnect():
-    if os.path.exists(request.sid):
-        rmtree(request.sid)
-
-
+    socket.emit("build-finnished", request.sid)
 
 if __name__ == "__main__":
-    socket.run(app, debug=True)
+    socket.run(app, debug=False)

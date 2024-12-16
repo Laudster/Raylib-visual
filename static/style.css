@@ -133,11 +133,20 @@ input[placeholder="text"]
     height: 40%;
 }
 
-#build
+#gamename
 {
     position: absolute;
     left: 71%;
     top: 50%;
+    font-size: 150%;
+    border-radius: 4px;
+}
+
+#build
+{
+    position: absolute;
+    left: 71%;
+    top: 60%;
     font-size: 200%;
     border-radius: 4px;
     transition: 0.5s;
@@ -153,7 +162,7 @@ input[placeholder="text"]
 {
     position: absolute;
     left: 79%;
-    top: 48%;
+    top: 58%;
     width: 4%;
     height: 10%;
     padding: 0;

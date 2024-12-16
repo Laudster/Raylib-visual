@@ -74,6 +74,8 @@ if len(argv) > 1:
             if response.content.decode() == "done": break
 
         sleep(1)
+    
+    sleep(1)
 
     download_url = "http://127.0.0.1:5000/files/" + sessid
     response = requests.get(download_url)
