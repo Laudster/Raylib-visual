@@ -610,7 +610,18 @@ def build(data):
     while not os.path.isfile(f"{data[1]}/web-build/project.html"):
         sleep(1)
 
-    socket.emit("build-finnished", request.sid)
+    socket.emit("build-finnished", to=request.sid)
+
+@socket.on("getSessId")
+def getSessId():
+    return request.sid
+
+@socket.on("disconnect")
+def disconnect():
+    if os.path.exists(request.sid):
+        rmtree(request.sid)
+
+
 
 if __name__ == "__main__":
     socket.run(app, debug=False)
