@@ -925,6 +925,7 @@ function show_codes(button)
 
 function build_project()
 {
+    document.getElementById("build").backgroundColor = "rgb(27, 240, 27, 0.7)";
     socket.emit("build", processCodeblocks());
 
     socket.emit("getSessId", function(sessID){
@@ -937,8 +938,6 @@ socket.on("build-finnished", function(){
     let iframe = document.createElement("iframe");
     iframe.src = "http://localhost:8001/project.html";
     document.getElementById("display").appendChild(iframe);
-
-    document.getElementById("build").backgroundColor = "green";
 });
 
 socket.on("quit", function(){

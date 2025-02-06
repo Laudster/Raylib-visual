@@ -64,18 +64,18 @@ if len(argv) > 1:
     sessid = argv[1].split("://")[1][:-1]
 
     def quit(process):
-        requests.delete("http://127.0.0.1:5000/quit/" + sessid)
+        requests.delete("http://192.168.10.183:5000/quit/" + sessid)
         process.kill()
 
     while True:
-        response = requests.get("http://127.0.0.1:5000/compilingcheck/" + sessid)
+        response = requests.get("http://192.168.10.183:5000/compilingcheck/" + sessid)
 
         if response.status_code == 200:
             if response.content.decode() == "done": break
 
         sleep(1)
 
-    download_url = "http://127.0.0.1:5000/files/" + sessid
+    download_url = "http://192.168.10.183:5000/files/" + sessid
     response = requests.get(download_url)
 
     chdir(path.dirname(executable))

@@ -1,8 +1,9 @@
 from flask import Flask, render_template, send_file, request
 from flask_socketio  import SocketIO
-from subprocess import Popen, run, CalledProcessError
+from subprocess import Popen
 from time import sleep
 from shutil import rmtree
+from threading import Thread
 from zipfile import ZipFile
 from processors import setVariable
 import os, io
@@ -23,6 +24,10 @@ def compilingcheck(sid):
     else:
         return "compiling"
 
+def clean(folder):
+    sleep(1)
+    rmtree(folder)
+
 @app.route("/files/<sessid>")
 def file_download(sessid):
     compiled_files = sessid+"/web-build"
@@ -40,6 +45,8 @@ def file_download(sessid):
                 zip_file.write(file_path, file_name)
     
     zip_buffer.seek(0)
+
+    Thread(target=clean, args=(sessid,), daemon=True).start()
 
     return send_file(zip_buffer, mimetype="application/zip", as_attachment=True, download_name="compiled_files.zip")
 
@@ -610,4 +617,4 @@ def getSessId():
     return request.sid
 
 if __name__ == "__main__":
-    socket.run(app, debug=False)
+    socket.run(app, debug=False, host="0.0.0.0")
