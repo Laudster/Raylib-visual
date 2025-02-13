@@ -4,17 +4,17 @@
  False,
  'C:\\Users\\amund\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\PyInstaller\\bootloader\\images\\icon-console.ico',
  None,
- True,
+ False,
  False,
  b'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<assembly xmlns='
  b'"urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">\n  <trustInfo x'
  b'mlns="urn:schemas-microsoft-com:asm.v3">\n    <security>\n      <requested'
- b'Privileges>\n        <requestedExecutionLevel level="requireAdministrator'
- b'" uiAccess="false"/>\n      </requestedPrivileges>\n    </security>\n  </tr'
- b'ustInfo>\n  <dependency>\n    <dependentAssembly>\n      <assemblyIdentity '
- b'type="win32" name="Microsoft.Windows.Common-Controls" version="6.0.0.0" proc'
- b'essorArchitecture="*" publicKeyToken="6595b64144ccf1df" language="*"/>\n '
- b'   </dependentAssembly>\n  </dependency>\n</assembly>',
+ b'Privileges>\n        <requestedExecutionLevel level="asInvoker" uiAccess='
+ b'"false"/>\n      </requestedPrivileges>\n    </security>\n  </trustInfo>\n  '
+ b'<dependency>\n    <dependentAssembly>\n      <assemblyIdentity type="win32'
+ b'" name="Microsoft.Windows.Common-Controls" version="6.0.0.0" processorArchit'
+ b'ecture="*" publicKeyToken="6595b64144ccf1df" language="*"/>\n    </depend'
+ b'entAssembly>\n  </dependency>\n</assembly>',
  True,
  False,
  None,
@@ -106,7 +106,7 @@
  [],
  False,
  True,
- 1736109960,
+ 1739393123,
  [('run.exe',
    'C:\\Users\\amund\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\PyInstaller\\bootloader\\Windows-64bit-intel\\run.exe',
    'EXECUTABLE')],

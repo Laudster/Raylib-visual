@@ -1,76 +1,72 @@
 <!DOCTYPE html>
-
-<html>
-    <head>
-        <title> Raylib Visual </title>
-
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">    
-
-        <link rel="stylesheet" href="{{url_for("static", filename="style.css")}}">
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-        <script src="{{url_for("static", filename="script.js")}}"></script>
-    </head>
-
-    <body>
-        <div id="container">
-            <div id="code_bar">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for("static", filename="style.css")}}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="{{url_for("static", filename="script.js")}}"></script>
+    <title>Raylib Visual</title>
+</head>
+<body>
+    <div class="container">
+        <div class="code">
+            <div class="categories">
                 <button onclick="show_codes(this)" class="code_type"> Render </button>
+    
                 <button onclick="show_codes(this)" class="code_type"> Input </button>
+    
                 <button onclick="show_codes(this)" class="code_type"> Logic </button>
+    
                 <button onclick="show_codes(this)" class="code_type"> Loops </button>
+                
                 <button onclick="show_codes(this)" class="code_type"> Math </button>
+    
                 <button onclick="show_codes(this)" class="code_type"> Variables </button>
             </div>
-        
-            <div id="coding">
+    
+            <div class="coding" id="coding" hidden>
                 <h2>  </h2>
             </div>
+        </div>
+        
+        <div id="codeblocks">
+            <div id="Setup">
+                <button onclick="chosen_section(this)" class="codeheader"> Setup </button>
 
-            <di id="codeblocks">
-                <div id="Setup">
-                    <button onclick="chosen_section(this)" class="codeheader"> Setup </button>
-
-                    <ul id="setup">
-
-                    </ul>
-                </div>
-
-                <div id="Input">
-                    <button onclick="chosen_section(this)" class="codeheader"> Input </button>
-
-                    <ul id="input">
-
-                    </ul>
-                </div>
-
-                <div id="Update">
-                    <button onclick="chosen_section(this)" class="codeheader"> Update </button>
-
-                    <ul id="update">
-
-                    </ul>
-                </div>
-
-                <div id="Render">
-                    <button onclick="chosen_section(this)" class="codeheader"> Render </button>
-
-                    <ul id="render">
-
-                    </ul>
-                </div>
-            </di>
-
-            <div id="display">
-            </div>
-            
-            <div id="config"></div>
-                <button onclick="build_project()" id="build"> Compile </button>
-                <a href="{{url_for("static", filename="compiler.exe")}}" download="compiler.exe" id="download"> <img id="downloadimg" alt="download compiler" src="{{url_for("static", filename="download.png")}}"></a>
+                <ul id="setup"></ul>
             </div>
 
+            <div id="Input">
+                <button onclick="chosen_section(this)" class="codeheader"> Input </button>
+
+                <ul id="input"></ul>
+            </div>
+
+            <div id="Update">
+                <button onclick="chosen_section(this)" class="codeheader"> Update </button>
+
+                <ul id="update"></ul>
+            </div>
+
+            <div id="Render">
+                <button onclick="chosen_section(this)" class="codeheader"> Render </button>
+
+                <ul id="render"></ul>
+            </div>
         </div>
 
-    </body>
+        <div class="control">
+            <div class="display" id="display"></div>
+
+            <div class="config">
+                <div class="panel">
+                    <button onclick="build_project()" id="build"> Compile </button>
+                    <a href="{{url_for("static", filename="compiler.exe")}}" download="compiler.exe" id="download"> <img id="downloadimg" alt="download compiler" src="{{url_for("static", filename="download.png")}}"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
 </html>

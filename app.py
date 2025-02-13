@@ -588,7 +588,7 @@ def processCode(codeblocks, folder):
         projectCode = projectCode.replace("//Input", "//Input" + inputCode)
         projectCode = projectCode.replace("//Update", "//Update" + updateCode)
         projectCode = projectCode.replace("ClearBackground(defaultColour);", "ClearBackground(defaultColour);\t\t\t" + renderCode)
-            
+
     with open(f"{folder}/project_file.c", "w") as file:
         file.write(projectCode)
         
