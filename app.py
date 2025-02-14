@@ -23,6 +23,10 @@ def compilingcheck(sid):
         return "done"
     else:
         return "compiling"
+    
+@app.route("/get-setup")
+def getSetup():
+    return send_file("static/setup.exe", as_attachment=True)
 
 def clean(folder):
     sleep(1)

@@ -32,5 +32,3 @@ if len(argv) > 1:
 
     except Exception as e:
         print(f"Failed to create custom URI scheme: {e}")
-
-    input()
