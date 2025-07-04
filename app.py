@@ -440,7 +440,6 @@ def processCode(codeblocks, folder):
         if "Draw Text" in codeblock:
             #Draw Text: 0 0 0 0 #000000 
             splits = codeblock.split(": ")[1].split(";")
-            value = splits[0]
             value = []
             argument = ""
 
@@ -464,7 +463,7 @@ def processCode(codeblocks, folder):
                 if variables[splits[0]] == "number":
                     value = f'TextFormat("%i", {splits[0]})'
             else:
-                value = f'"{value}"'
+                value = f'"{splits[0]}"'
 
             if isInIfStatement == True:
                 renderCode += f"DrawText({value}, {splits[1]}, {splits[2]}, {splits[3]}, GetColor(0x{splits[4][1:len(splits[4])]}ff));"
