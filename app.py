@@ -3,6 +3,7 @@ from flask_socketio  import SocketIO
 from subprocess import Popen
 from time import sleep
 from shutil import rmtree
+from threading import Thread
 from zipfile import ZipFile
 from processors import setVariable
 import os, io
@@ -22,6 +23,14 @@ def compilingcheck(sid):
         return "done"
     else:
         return "compiling"
+    
+@app.route("/get-setup")
+def getSetup():
+    return send_file("static/setup.exe", as_attachment=True)
+
+def clean(folder):
+    sleep(1)
+    rmtree(folder)
 
 @app.route("/files/<folder>")
 def file_download(folder):
@@ -41,7 +50,11 @@ def file_download(folder):
     
     zip_buffer.seek(0)
 
+<<<<<<< HEAD
+    Thread(target=clean, args=(sessid,), daemon=True).start()
+=======
     rmtree(folder)
+>>>>>>> origin/main
 
     return send_file(zip_buffer, mimetype="application/zip", as_attachment=True, download_name="compiled_files.zip")
 
@@ -582,7 +595,7 @@ def processCode(codeblocks, folder):
         projectCode = projectCode.replace("//Input", "//Input" + inputCode)
         projectCode = projectCode.replace("//Update", "//Update" + updateCode)
         projectCode = projectCode.replace("ClearBackground(defaultColour);", "ClearBackground(defaultColour);\t\t\t" + renderCode)
-            
+
     with open(f"{folder}/project_file.c", "w") as file:
         file.write(projectCode)
         
@@ -604,7 +617,11 @@ def build(data):
         if os.path.isfile(os.path.join(f"{data[1]}/web-build", file)):
             os.remove(os.path.join(f"{data[1]}/web-build", file))
 
+<<<<<<< HEAD
+    Popen(r"build.sh " + str(request.sid), shell=True)
+=======
     Popen(r"build.bat " + str(data[1]), shell=True)
+>>>>>>> origin/main
 
     while not os.path.isfile(f"{data[1]}/web-build/project.html"):
         sleep(1)
@@ -623,4 +640,8 @@ def disconnect():
 
 
 if __name__ == "__main__":
+<<<<<<< HEAD
+    socket.run(app, debug=False, host="0.0.0.0", port=5000)
+=======
     socket.run(app, debug=False)
+>>>>>>> origin/main

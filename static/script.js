@@ -926,6 +926,15 @@ function show_codes(button)
 
 function build_project()
 {
+<<<<<<< HEAD
+    document.getElementById("build").backgroundColor = "rgb(27, 240, 27, 0.7)";
+    socket.emit("build", processCodeblocks());
+
+    socket.emit("getSessId", function(sessID){
+        console.log(sessID);
+        window.open("raylibvisual://" + sessID, "_parent");
+    });
+=======
     if (document.getElementById("gamename").value.length > 0)
     {
         socket.emit("nameinuse?", document.getElementById("gamename").value, function(response){
@@ -935,6 +944,7 @@ function build_project()
             } else alert("name is already in use, bad luck")
         })
     } else alert("Game needs a name");console.log(document.getElementById("gamename").value.length);
+>>>>>>> origin/main
 }
 
 socket.on("build-finnished", function(){
@@ -943,8 +953,6 @@ socket.on("build-finnished", function(){
     let iframe = document.createElement("iframe");
     iframe.src = "http://localhost:8001/project.html";
     document.getElementById("display").appendChild(iframe);
-
-    document.getElementById("build").backgroundColor = "green";
 });
 
 socket.on("quit", function(name){
