@@ -49,7 +49,7 @@ with open(os.path.join(settings_folder, "settings.json"), "r") as file:
             except Exception as e:
                 print(f"Failed to create custom URI scheme: {e}")
 
-download_url = "http://127.0.0.1:5000/files"
+download_url = "http://104.248.194.14:5000/files"
 response = requests.get(download_url)
 
 if response.status_code == 200:

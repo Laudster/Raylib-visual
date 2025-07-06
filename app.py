@@ -445,7 +445,7 @@ def processCode(codeblocks, folder):
                 if variables[splits[0]] == "number":
                     value = f'TextFormat("%i", {splits[0]})'
             else:
-                value = f'"{value}"'
+                value = f'"{splits[0]}"'
 
             if isInIfStatement == True:
                 renderCode += f"DrawText({value}, {splits[1]}, {splits[2]}, {splits[3]}, GetColor(0x{splits[4][1:len(splits[4])]}ff));"
@@ -581,7 +581,7 @@ def build(code):
         if os.path.isfile(os.path.join(f"{request.sid}/web-build", file)):
             os.remove(os.path.join(f"{request.sid}/web-build", file))
 
-    Popen(r"build.bat " + str(request.sid), shell=True)
+    Popen(r"./build.sh " + str(request.sid), shell=True)
 
     while not os.path.isfile(f"{request.sid}/web-build/project.html"):
         sleep(1)
@@ -630,4 +630,4 @@ def disconnect():
 
 
 if __name__ == "__main__":
-    socket.run(app, debug=True)
+    socket.run(app, host="0.0.0.0", port=5000, debug=False)
