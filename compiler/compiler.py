@@ -42,7 +42,7 @@ with open(path.join(settings_folder, "settings.json"), "r") as file:
             input()
             exit()
         else:
-            url = "http://192.168.3.88:5000/get-setup"
+            url = "http://104.248.194.141:5000/get-setup"
 
             response = requests.get(url, stream=True)
 
@@ -69,18 +69,18 @@ if len(argv) > 1:
     sessid = argv[1].split("://")[1][:-1]
 
     def quit(process):
-        requests.delete("http://192.168.3.88:5000/quit/" + sessid)
+        requests.delete("http://104.248.194.141:5000/quit/" + sessid)
         process.kill()
 
     while True:
-        response = requests.get("http://192.168.3.88:5000/compilingcheck/" + sessid)
+        response = requests.get("http://104.248.194.141:5000/compilingcheck/" + sessid)
 
         if response.status_code == 200:
             if response.content.decode() == "done": break
 
         sleep(1)
 
-    download_url = "http://192.168.3.88:5000/files/" + sessid
+    download_url = "http://104.248.194.141:5000/files/" + sessid
     response = requests.get(download_url)
 
     chdir(path.dirname(executable))
