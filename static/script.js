@@ -6,6 +6,7 @@ socket.on("connect", function(){
 
 socket.on("disconnect", function(){
     console.log("disconnected");
+    socket.emit("disconnect");
 });
 
 let codeSection = "";
@@ -925,6 +926,7 @@ function show_codes(button)
 
 function build_project()
 {
+<<<<<<< HEAD
     document.getElementById("build").backgroundColor = "rgb(27, 240, 27, 0.7)";
     socket.emit("build", processCodeblocks());
 
@@ -932,16 +934,32 @@ function build_project()
         console.log(sessID);
         window.open("raylibvisual://" + sessID, "_parent");
     });
+=======
+    if (document.getElementById("gamename").value.length > 0)
+    {
+        socket.emit("nameinuse?", document.getElementById("gamename").value, function(response){
+            if (response == "no"){
+                socket.emit("build", [processCodeblocks(), document.getElementById("gamename").value]);
+                window.open("raylibvisual://" + document.getElementById("gamename").value);
+            } else alert("name is already in use, bad luck")
+        })
+    } else alert("Game needs a name");console.log(document.getElementById("gamename").value.length);
+>>>>>>> origin/main
 }
 
 socket.on("build-finnished", function(){
+    console.log("finnished build");
+
     let iframe = document.createElement("iframe");
     iframe.src = "http://localhost:8001/project.html";
     document.getElementById("display").appendChild(iframe);
 });
 
-socket.on("quit", function(){
-    console.log("remove");
-    document.getElementById("display").querySelector("iframe").remove();
-    document.getElementById("build").backgroundColor = "";
+socket.on("quit", function(name){
+    if (document.getElementById("gamename").value == name)
+    {
+        console.log("remove");
+        document.getElementById("display").querySelector("iframe").remove();
+        document.getElementById("build").backgroundColor = "";
+    }
 });

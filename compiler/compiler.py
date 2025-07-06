@@ -79,6 +79,8 @@ if len(argv) > 1:
             if response.content.decode() == "done": break
 
         sleep(1)
+    
+    sleep(1)
 
     download_url = "http://104.248.194.141:5000/files/" + sessid
     response = requests.get(download_url)

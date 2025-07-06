@@ -16,7 +16,7 @@ socket = SocketIO(app)
 @app.route("/")
 def start():
     return render_template("index.html")
- 
+
 @app.route("/compilingcheck/<sid>")
 def compilingcheck(sid):
     if os.path.isfile(f"{sid}/web-build/project.html"):
@@ -32,9 +32,9 @@ def clean(folder):
     sleep(1)
     rmtree(folder)
 
-@app.route("/files/<sessid>")
-def file_download(sessid):
-    compiled_files = sessid+"/web-build"
+@app.route("/files/<folder>")
+def file_download(folder):
+    compiled_files = folder+"/web-build"
 
     print(compiled_files)
 
@@ -50,13 +50,17 @@ def file_download(sessid):
     
     zip_buffer.seek(0)
 
+<<<<<<< HEAD
     Thread(target=clean, args=(sessid,), daemon=True).start()
+=======
+    rmtree(folder)
+>>>>>>> origin/main
 
     return send_file(zip_buffer, mimetype="application/zip", as_attachment=True, download_name="compiled_files.zip")
 
 @app.route("/quit/<sessid>", methods=['DELETE'])
 def quit(sessid):
-    socket.emit("quit", to=sessid)
+    socket.emit("quit", sessid)
     print("Sent signal to " + sessid)
 
     return "doneso"
@@ -449,7 +453,6 @@ def processCode(codeblocks, folder):
         if "Draw Text" in codeblock:
             #Draw Text: 0 0 0 0 #000000 
             splits = codeblock.split(": ")[1].split(";")
-            value = splits[0]
             value = []
             argument = ""
 
@@ -473,7 +476,7 @@ def processCode(codeblocks, folder):
                 if variables[splits[0]] == "number":
                     value = f'TextFormat("%i", {splits[0]})'
             else:
-                value = f'"{value}"'
+                value = f'"{splits[0]}"'
 
             if isInIfStatement == True:
                 renderCode += f"DrawText({value}, {splits[1]}, {splits[2]}, {splits[3]}, GetColor(0x{splits[4][1:len(splits[4])]}ff));"
@@ -596,22 +599,31 @@ def processCode(codeblocks, folder):
     with open(f"{folder}/project_file.c", "w") as file:
         file.write(projectCode)
         
+@socket.on("nameinuse?")
+def nameinuse(name):
+    if not os.path.exists(name):
+        return "no"
+    else: return "yes"
 
 @socket.on("build")
-def build(code):
-    if not os.path.exists(request.sid):
-        os.mkdir(request.sid)
-        os.mkdir(f"{request.sid}/web-build")
+def build(data):
+    if not os.path.exists(data[1]):
+        os.mkdir(data[1])
+        os.mkdir(f"{data[1]}/web-build")
 
-    processCode(code, request.sid)
+    processCode(data[0], data[1])
 
-    for file in os.listdir(f"{request.sid}/web-build"):
-        if os.path.isfile(os.path.join(f"{request.sid}/web-build", file)):
-            os.remove(os.path.join(f"{request.sid}/web-build", file))
+    for file in os.listdir(f"{data[1]}/web-build"):
+        if os.path.isfile(os.path.join(f"{data[1]}/web-build", file)):
+            os.remove(os.path.join(f"{data[1]}/web-build", file))
 
+<<<<<<< HEAD
     Popen(r"build.sh " + str(request.sid), shell=True)
+=======
+    Popen(r"build.bat " + str(data[1]), shell=True)
+>>>>>>> origin/main
 
-    while not os.path.isfile(f"{request.sid}/web-build/project.html"):
+    while not os.path.isfile(f"{data[1]}/web-build/project.html"):
         sleep(1)
 
     socket.emit("build-finnished", to=request.sid)
@@ -620,5 +632,16 @@ def build(code):
 def getSessId():
     return request.sid
 
+@socket.on("disconnect")
+def disconnect():
+    if os.path.exists(request.sid):
+        rmtree(request.sid)
+
+
+
 if __name__ == "__main__":
+<<<<<<< HEAD
     socket.run(app, debug=False, host="0.0.0.0", port=5000)
+=======
+    socket.run(app, debug=False)
+>>>>>>> origin/main

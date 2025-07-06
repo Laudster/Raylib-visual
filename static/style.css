@@ -186,6 +186,120 @@ input[placeholder="text"]
     cursor: pointer;
 }
 
+<<<<<<< HEAD
+=======
+input
+{
+    width: 20%;
+}
+
+input[type="number"]
+{
+    width: 6%;
+}
+
+input[placeholder="text"]
+{
+    width: 7%;
+}
+
+#coding input[type="color"]
+{
+    width: 10%;
+}
+
+#codeblocks input[placeholder="text"] 
+{
+    width: 10%;
+}
+
+#codeblocks input[type="tel"]
+{
+    width: 10%;
+}
+
+#display
+{
+    position: absolute;
+    left: 70%;
+    top: 5%;
+    background-color: black;
+    width: 30%;
+    height: 40%;
+    overflow: hidden;
+    border-top: solid 5px grey;
+    border-left: solid 5px grey;
+}
+
+#config
+{
+    background-color: rgb(240, 240, 240);
+    position: absolute;
+    top: 45%;
+    left: 70%;
+    width: 30%;
+    height: 40%;
+}
+
+#gamename
+{
+    position: absolute;
+    left: 71%;
+    top: 50%;
+    font-size: 150%;
+    border-radius: 4px;
+}
+
+#build
+{
+    position: absolute;
+    left: 71%;
+    top: 60%;
+    font-size: 200%;
+    border-radius: 4px;
+    transition: 0.5s;
+}
+
+#build:hover
+{
+    background-color: rgb(27, 240, 27, 0.7);
+    cursor: pointer;
+}
+
+#download
+{
+    position: absolute;
+    left: 79%;
+    top: 58%;
+    width: 4%;
+    height: 10%;
+    padding: 0;
+    border: none;
+}
+
+#download img{
+    width: 100%;
+}
+
+#download:hover{
+    cursor: pointer;
+}
+
+#downloadimg
+{
+    width: 15%;
+    height: auto;
+}
+
+#codeblocks
+{
+    position: absolute;
+    top: 6.5%;
+    left: 31%;
+    width: 50%;
+}
+
+>>>>>>> origin/main
 ul
 {
     list-style: none;
