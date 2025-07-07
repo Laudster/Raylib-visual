@@ -42,7 +42,7 @@ with open(path.join(settings_folder, "settings.json"), "r") as file:
             input()
             exit()
         else:
-            url = "http://104.248.194.141/get-setup"
+            url = "https://kodekloss.no/get-setup"
 
             response = requests.get(url, stream=True)
 
@@ -69,18 +69,19 @@ if len(argv) > 1:
     sessid = argv[1].split("://")[1][:-1]
 
     def quit(process):
-        requests.delete("http://104.248.194.141/quit/" + sessid)
+        requests.delete("https://kodekloss.no/quit/" + sessid)
         process.kill()
 
     while True:
-        response = requests.get("http://104.248.194.141/compilingcheck/" + sessid)
+        print("checking for files at ")
+        response = requests.get("https://kodekloss.no/compilingcheck/" + sessid)
 
         if response.status_code == 200:
             if response.content.decode() == "done": break
 
         sleep(1)
 
-    download_url = "http://104.248.194.141/files/" + sessid
+    download_url = "https://kodekloss.no/files/" + sessid
     response = requests.get(download_url)
 
     chdir(path.dirname(executable))
