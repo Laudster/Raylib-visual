@@ -73,7 +73,6 @@ if len(argv) > 1:
         process.kill()
 
     while True:
-        print("checking for files at ")
         response = requests.get("https://kodekloss.no/compilingcheck/" + sessid)
 
         if response.status_code == 200:
