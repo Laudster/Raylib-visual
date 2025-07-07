@@ -16,6 +16,10 @@ socket = SocketIO(app)
 @app.route("/")
 def start():
     return render_template("index.html")
+
+@app.route("/om")
+def om():
+    return render_template("om.html")
  
 @app.route("/compilingcheck/<sid>")
 def compilingcheck(sid):

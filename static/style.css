@@ -19,6 +19,24 @@ body
     gap: 2rem;
 }
 
+.om
+{
+    text-align: center;
+    text-decoration: none;
+    color: black;
+    padding: 0.8rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    border-radius: 2rem;
+    background-color: rgb(178, 190, 186);
+    border: 2px solid rgb(126, 106, 106);
+}
+
+.om:hover
+{
+    text-decoration: underline;
+}
+
 .categories
 {
     display: flex;

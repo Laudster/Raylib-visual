@@ -77,7 +77,7 @@ if len(argv) > 1:
     while True:
         response = requests.get("https://kodekloss.no/compilingcheck/" + sessid)
 
-        if response.status_code == 200:
+        if response.ok:
             if response.content.decode() == "done": break
 
         sleep(1)
@@ -87,7 +87,7 @@ if len(argv) > 1:
 
     chdir(path.dirname(executable))
 
-    if response.status_code == 200:
+    if response.ok:
         with open("compiled_files.zip", "wb") as f:
             f.write(response.content)
 
