@@ -67,11 +67,15 @@ def quit(sessid):
 
 
 def processCode(codeblocks, folder):
-    
+    variables = {"defaultColour": "color", "FPS": "number", "title": "text"}
+
+    isInIfStatement = False
+
+    beguneIf = False
+
     setup = codeblocks.get("setup")
     setupCode = ""
-
-    print(codeblocks)
+    
     for code in codeblocks:
         if len(codeblocks.get(code)) > 0:
             actualCode = codeblocks.get(code)
@@ -91,17 +95,17 @@ def processCode(codeblocks, folder):
                     while block[i] != ";":
                         maxnum += block[i]
                         i += 1
-                    
-                    print(block)
 
                     codeblocks.get(code)[codeblocks.get(code).index(block)] = block[0:indeks-1 - len(minnum)] + f"randint({minnum[::-1]}, {maxnum});" + block[indeks + 8: len(block)]
+                
+                if "MousePositionX" in block:
+                    codeblocks.get(code)[codeblocks.get(code).index(block)] = block.replace("MousePositionX", "thecurrentmousepositionasitiscurrently.x;")
+                    variables["thecurrentmousepositionasitiscurrently.x"] = "number"
 
-    variables = {"defaultColour": "color", "FPS": "number", "title": "text"}
+                if "MousePositionY" in block:
+                    codeblocks.get(code)[codeblocks.get(code).index(block)] = block.replace("MousePositionY", "thecurrentmousepositionasitiscurrently.y;")
+                    variables["thecurrentmousepositionasitiscurrently.y"] = "number"
 
-    isInIfStatement = False
-
-    beguneIf = False
-     
     for codeblock in setup:
         
         if not "tab" in codeblock and isInIfStatement == True and beguneIf == True:
@@ -473,6 +477,8 @@ def processCode(codeblocks, folder):
                                 value.append(v)
                         else: argument += v
 
+            print(splits[0])
+            print(variables)
             if splits[0] in variables:
                 if variables[splits[0]] == "number":
                     value = f'TextFormat("%i", {splits[0]})'
@@ -587,7 +593,6 @@ def processCode(codeblocks, folder):
                         renderCode += "\n\t\twhile (" + splits[0].replace(" ", "") + value + "){"
 
     if isInIfStatement == True: renderCode += "}"
-
 
     with open("outline.c", "r") as file:
         projectCode = file.read()

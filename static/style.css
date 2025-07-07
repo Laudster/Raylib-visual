@@ -189,6 +189,13 @@ input[placeholder="text"]
     border-radius: 5px;
 }
 
+#coding li button.medium
+{
+    margin-bottom: 3%;
+    padding: 1%;
+    border-radius: 5px;
+}
+
 #coding li button.condition
 {
     width: 20%;

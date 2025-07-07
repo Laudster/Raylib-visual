@@ -25,6 +25,7 @@ int main()
 
     while (!WindowShouldClose())
     {
+        Vector2 thecurrentmousepositionasitiscurrently = GetMousePosition();
         //Input
 
 

@@ -12,7 +12,7 @@ let codeSection = "";
 
 const codeblocks = {
     "Render": ["Draw Rectangle: (number) (number) (number) (number) (color)", "Draw Circle: (number) (number) (number) (color)", "Draw Text: (text) (number) (number) (number) (color)"],
-    "Input": ["IsKeyDown: (keycode)", "IsMouseDown: (mousebutton)"],
+    "Input": ["IsKeyDown: (keycode)", "IsMouseDown: (mousebutton)", "MousePositionX", "MousePositionY"],
     "Logic": ["If: (statement)", "Else If: (statement)", "Else", "And", "Or", "Not"],
     "Loops": ["Loop: (number)", "While: (statement)"],
     "Math": ["(number) + (number)", "(number) - (number)", "(number) * (number)", "(number) : (number)", "(number) RND (number)", "(number) == (number)", "(number) != (number)", "(number) < (number)", "(number) > (number)"],
@@ -621,16 +621,48 @@ function update_panel(inner)
         }
 
         if (inner == "Input"){
-            button.onmousedown = () =>{
-                keyBlock = li;
-    
-                highlight("blue");
-            }
+            if (button.innerHTML.search("Position") > 0){
+                button.className = "medium"
 
-            button.onmouseup = () =>{
-                keyBlock = "";
-    
-                highlight("");
+                button.onmousedown = () =>
+                {
+                    mathBlock = button.parentElement;
+
+                    ["setup", "input", "update", "render"].forEach(ting => {
+                        for (const block of document.getElementById(ting).children){
+                            for (const element of block.children){
+                                if (element.tagName == "INPUT" && element.type == "number") element.style.borderColor = "blue";
+                                if (element.tagName == "INPUT" && element.type == "text") element.style.borderColor = "blue";
+                            }
+                        }
+                    })
+                }
+
+                button.onmouseup = () => {
+
+                    mathBlock = "";
+
+                    ["setup", "input", "update", "render"].forEach(ting => {
+                        for (const block of document.getElementById(ting).children){
+                            for (const element of block.children){
+                                if (element.tagName == "INPUT" && element.type == "number") element.style.borderColor = "";
+                                if (element.tagName == "INPUT" && element.type == "text") element.style.borderColor = "";
+                            }
+                        }
+                    })
+                }
+            } else {
+                button.onmousedown = () =>{
+                    keyBlock = li;
+        
+                    highlight("blue");
+                }
+
+                button.onmouseup = () =>{
+                    keyBlock = "";
+        
+                    highlight("");
+                }
             }
         }
 
