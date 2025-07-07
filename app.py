@@ -99,12 +99,12 @@ def processCode(codeblocks, folder):
                     codeblocks.get(code)[codeblocks.get(code).index(block)] = block[0:indeks-1 - len(minnum)] + f"randint({minnum[::-1]}, {maxnum});" + block[indeks + 8: len(block)]
                 
                 if "MousePositionX" in block:
-                    codeblocks.get(code)[codeblocks.get(code).index(block)] = block.replace("MousePositionX", "thecurrentmousepositionasitiscurrently.x;")
-                    variables["thecurrentmousepositionasitiscurrently.x"] = "number"
+                    codeblocks.get(code)[codeblocks.get(code).index(block)] = block.replace("MousePositionX", "(int)thecurrentmousepositionasitiscurrently.x;")
+                    variables["(int)thecurrentmousepositionasitiscurrently.x"] = "number"
 
                 if "MousePositionY" in block:
-                    codeblocks.get(code)[codeblocks.get(code).index(block)] = block.replace("MousePositionY", "thecurrentmousepositionasitiscurrently.y;")
-                    variables["thecurrentmousepositionasitiscurrently.y"] = "number"
+                    codeblocks.get(code)[codeblocks.get(code).index(block)] = block.replace("MousePositionY", "(int)thecurrentmousepositionasitiscurrently.y;")
+                    variables["(int)thecurrentmousepositionasitiscurrently.y"] = "number"
 
     for codeblock in setup:
         
