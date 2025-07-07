@@ -46,7 +46,9 @@ with open(path.join(settings_folder, "settings.json"), "r") as file:
 
             response = requests.get(url, stream=True)
 
-            if response.status_code == 200:
+            print("Returned code: " + str(response.status_code))
+
+            if response.ok:
                 with open("temp-setup-file.exe", "wb") as f:
                     for chunk in response.iter_content(chunk_size=8192):
                         f.write(chunk)
@@ -62,7 +64,7 @@ with open(path.join(settings_folder, "settings.json"), "r") as file:
                 print("Finished setup process")
                 remove("temp-setup-file.exe")
             else:
-                print("Server is wrong")
+                print("Could not find setup file")
 
 
 if len(argv) > 1:
