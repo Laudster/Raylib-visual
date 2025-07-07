@@ -1,3 +1,6 @@
+DIR="$1"
+OUTPUT_DIR="${DIR}/web-build"
+SOURCE_FILE="${DIR}/project_file.c"
 RAYLIB_PATH="/home/dependencies/raylib" # Adjust if raylib is somewhere else
 
 echo "Starting Emscripten compilation..."
