@@ -11,7 +11,7 @@ socket.on("disconnect", function(){
 let codeSection = "";
 
 const codeblocks = {
-    "Visuellt": ["Tegn Firkant: (number) (number) (number) (number) (color)", "Tegn Sirkel: (number) (number) (number) (color)", "Skriv Tekst: (text) (number) (number) (number) (color)"],
+    "Visuelt": ["Tegn Firkant: (number) (number) (number) (number) (color)", "Tegn Sirkel: (number) (number) (number) (color)", "Skriv Tekst: (text) (number) (number) (number) (color)"],
     "Inndata": ["Knapp Trykket: (keycode)", "Museknapp Nede: (mousebutton)", "MusePosisjonX", "MusePosisjonY"],
     "Logikk": ["Hvis: (statement)", "Ellers Om: (statement)", "Ellers", "Og", "Eller"],
     "Løkker": ["Gjenta: (number)", "Så Lenge: (statement)"],
@@ -767,7 +767,7 @@ function update_panel(inner)
             };
         }
         
-        if (inner == "Visuellt"){
+        if (inner == "Visuelt"){
             button.onmousedown = () => {
                 const copy = li.cloneNode(true);
     
