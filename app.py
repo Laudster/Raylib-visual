@@ -622,7 +622,7 @@ def build(code):
 
     processCode(code, prosjekter[request.sid])
 
-    for file in os.listdir(f"{request.sid}/web-build"):
+    for file in os.listdir(f"{prosjekter[request.sid]}/web-build"):
         if os.path.isfile(os.path.join(f"{prosjekter[request.sid]}/web-build", file)):
             os.remove(os.path.join(f"{prosjekter[request.sid]}/web-build", file))
 
