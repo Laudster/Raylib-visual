@@ -13,7 +13,7 @@ let codeSection = "";
 const codeblocks = {
     "Visuellt": ["Tegn Firkant: (number) (number) (number) (number) (color)", "Tegn Sirkel: (number) (number) (number) (color)", "Skriv Tekst: (text) (number) (number) (number) (color)"],
     "Inndata": ["Knapp Trykket: (keycode)", "Museknapp Nede: (mousebutton)", "MusePosisjonX", "MusePosisjonY"],
-    "Logikk": ["Hvis: (statement)", "Ellers Om: (statement)", "Ellers", "Og", "Eller", "Ikke"],
+    "Logikk": ["Hvis: (statement)", "Ellers Om: (statement)", "Ellers", "Og", "Eller"],
     "Løkker": ["Gjenta: (number)", "Så Lenge: (statement)"],
     "Matte": ["(number) + (number)", "(number) - (number)", "(number) * (number)", "(number) : (number)", "(number) 🎲 (number)", "(number) == (number)", "(number) != (number)", "(number) < (number)", "(number) > (number)"],
     "Variabler": ["Lag Variabel: (assignvalue) (variable)", "Sett Variabel: (thevariable) (value)"]}
