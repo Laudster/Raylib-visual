@@ -11,14 +11,14 @@ socket.on("disconnect", function(){
 let codeSection = "";
 
 const codeblocks = {
-    "Render": ["Draw Rectangle: (number) (number) (number) (number) (color)", "Draw Circle: (number) (number) (number) (color)", "Draw Text: (text) (number) (number) (number) (color)"],
-    "Input": ["IsKeyDown: (keycode)", "IsMouseDown: (mousebutton)", "MousePositionX", "MousePositionY"],
-    "Logic": ["If: (statement)", "Else If: (statement)", "Else", "And", "Or", "Not"],
-    "Loops": ["Loop: (number)", "While: (statement)"],
-    "Math": ["(number) + (number)", "(number) - (number)", "(number) * (number)", "(number) : (number)", "(number) RND (number)", "(number) == (number)", "(number) != (number)", "(number) < (number)", "(number) > (number)"],
-    "Variables": ["Create variable: (assignvalue) (variable)", "Set variable: (thevariable) (value)"]}
+    "Visuellt": ["Tegn Firkant: (number) (number) (number) (number) (color)", "Tegn Sirkel: (number) (number) (number) (color)", "Skriv Tekst: (text) (number) (number) (number) (color)"],
+    "Inndata": ["Knapp Trykket: (keycode)", "Museknapp Nede: (mousebutton)", "MusePosisjonX", "MusePosisjonY"],
+    "Logikk": ["Hvis: (statement)", "Ellers Om: (statement)", "Ellers", "Og", "Eller", "Ikke"],
+    "Løkker": ["Gjenta: (number)", "Så Lenge: (statement)"],
+    "Matte": ["(number) + (number)", "(number) - (number)", "(number) * (number)", "(number) : (number)", "(number) 🎲 (number)", "(number) == (number)", "(number) != (number)", "(number) < (number)", "(number) > (number)"],
+    "Variabler": ["Lag Variabel: (assignvalue) (variable)", "Sett Variabel: (thevariable) (value)"]}
 
-let variables = {"defaultColour": "0x000000ff", "FPS": 60, "title": "Game"};
+let variables = {"bakgrunnFarge": "0x000000ff", "FPS": 60, "tittel": "Spill"};
 
 function isHex(inputString)
 {
@@ -32,7 +32,7 @@ function isHex(inputString)
 }
 
 function addtocode(copy){
-
+    console.log(codeSection);
     if (typeof(codeSection) !== "string"){
         let stillIfs = true;
         let sibling = codeSection.nextSibling;
@@ -73,7 +73,7 @@ function addtocode(copy){
 }
 
 function highlight(color){
-    ["setup", "input", "update", "render"].forEach(ting => {
+    ["start", "inndata", "oppdater", "visuelt"].forEach(ting => {
         for (const block of document.getElementById(ting).children){
             for (const element of block.children){
                 if (element.type == "tel") element.style.borderColor = color;
@@ -102,7 +102,7 @@ function mouse_entered_input(event)
 
         event.target.remove();
     
-        ["setup", "update", "input", "render"].forEach(stupid => {
+        ["start", "inndata", "oppdater", "visuelt"].forEach(stupid => {
             for (const block of document.getElementById(stupid).children){
                 for (const element of block.children){
                     if (element.tagName == "INPUT") element.style.borderColor = "";
@@ -125,7 +125,7 @@ function mouse_entered_input(event)
 
         mathBlock = "";
 
-        ["setup", "update", "input", "render"].forEach(stupid => {
+        ["start", "inndata", "oppdater", "visuelt"].forEach(stupid => {
             for (const block of document.getElementById(stupid).children){
                 for (const element of block.children){
                     if (element.tagName == "INPUT") element.style.borderColor = "";
@@ -153,14 +153,14 @@ function mouse_entered_input(event)
     
             highlight("");
             
-        } else if (event.target.style.borderColor == "blue" && operatorBlock != "" && operatorBlock.innerHTML != "Not "){
+        } else if (event.target.style.borderColor == "blue" && operatorBlock != "" && operatorBlock.innerHTML != "Ikke "){
             let newOperator = operatorBlock.cloneNode();
             newOperator.innerHTML = operatorBlock.innerHTML;
             event.target.parentElement.appendChild(newOperator);
 
             let newStatement = document.createElement("input");
             newStatement.type = "tel";
-            newStatement.placeholder = "statement";
+            newStatement.placeholder = "påstand";
             newStatement.addEventListener("mouseup", (event) => mouse_entered_input(event));
             event.target.parentElement.appendChild(newStatement)
 
@@ -191,7 +191,7 @@ function chosen_section(button)
         if (typeof(codeSection) !== "string") codeSection.querySelector("button").style.backgroundColor = "";
         codeSection = button.textContent.charAt(1).toLowerCase() + button.textContent.slice(2).replace(" ", "");
 
-        ["Setup", "Input", "Update", "Render"].forEach(id => {
+        ["Start", "Inndata", "Oppdater", "Visuelt"].forEach(id => {
             document.getElementById(id).querySelector("button").style.backgroundColor = "";
         });
 
@@ -201,8 +201,8 @@ function chosen_section(button)
 
 function processCodeblocks()
 {
-    let setup = [];
-    for (const block of document.getElementById("setup").children){
+    let start = [];
+    for (const block of document.getElementById("start").children){
 
         let line = "";
 
@@ -221,11 +221,11 @@ function processCodeblocks()
             if (child.value) line += child.value + ";";
         }
 
-        setup.push(line);
+        start.push(line);
     }
 
     let input = [];
-    for (const block of document.getElementById("input").children){
+    for (const block of document.getElementById("inndata").children){
 
         let line = "";
 
@@ -248,7 +248,7 @@ function processCodeblocks()
     }
 
     let update = [];
-    for (const block of document.getElementById("update").children){
+    for (const block of document.getElementById("oppdater").children){
 
         let line = "";
 
@@ -271,7 +271,7 @@ function processCodeblocks()
     }
 
     let render = [];
-    for (const block of document.getElementById("render").children){
+    for (const block of document.getElementById("visuelt").children){
 
         let line = "";
 
@@ -293,7 +293,9 @@ function processCodeblocks()
         render.push(line);
     }
 
-    return {"setup": setup, "input": input, "update": update, "render": render};
+    console.log({"setup": start, "input": input, "update": update, "render": render});
+
+    return {"setup": start, "input": input, "update": update, "render": render};
 }
 
 function add_variable_type(event)
@@ -301,18 +303,18 @@ function add_variable_type(event)
     const newType = event.target.value;
 
 
-    if (newType == "text")
+    if (newType == "tekst")
     {
         let newInput = document.createElement("input");
         newInput.type = "text";
-        newInput.placeholder = "text";
+        newInput.placeholder = "tekst";
         newInput.addEventListener("mouseup", (event) => mouse_entered_input(event));
 
 
         event.target.parentElement.appendChild(newInput);
     }
 
-    if (newType == "color")
+    if (newType == "farge")
         {
             let newInput = document.createElement("input");
             newInput.type = "color";
@@ -321,7 +323,7 @@ function add_variable_type(event)
             event.target.parentElement.appendChild(newInput);
         }
 
-    if (newType == "number")
+    if (newType == "nummer")
     {
         let newInput = document.createElement("input");
         newInput.type = "number";
@@ -334,18 +336,18 @@ function add_variable_type(event)
 
 function add_variable(event)
 {
-    if (event.target.parentElement.querySelector("select").value == "text")
+    if (event.target.parentElement.querySelector("select").value == "tekst")
     {
         variables[event.target.value] = "";
-        update_panel("Variables");
-    } else if (event.target.parentElement.querySelector("select").value == "color"){
+        update_panel("Variabler");
+    } else if (event.target.parentElement.querySelector("select").value == "farge"){
         variables[event.target.value] = "#000000";
-        update_panel("Variables");
+        update_panel("Variabler");
 
-    } else if (event.target.parentElement.querySelector("select").value == "number")
+    } else if (event.target.parentElement.querySelector("select").value == "nummer")
     {
         variables[event.target.value] = 0;
-        update_panel("Variables");
+        update_panel("Variabler");
     }
 }
 
@@ -369,7 +371,7 @@ function chosen_set_variable(event)
 
                 let variableInput = document.createElement("input");
                 variableInput.type = "text";
-                variableInput.placeholder = "text";
+                variableInput.placeholder = "tekst";
                 variableInput.onmouseup = (event) => mouse_entered_input(event);
                 
                 event.target.parentElement.appendChild(variableInput);
@@ -396,7 +398,7 @@ function update_panel(inner)
     newTitle.innerHTML = inner;
     document.getElementById("coding").appendChild(newTitle);
 
-    if (inner == "Variables")
+    if (inner == "Variabler")
     {
         Object.keys(variables).forEach(variable =>{
             let button = document.createElement("button");
@@ -407,7 +409,7 @@ function update_panel(inner)
                 variableSelelect = button.textContent;
 
 
-                ["setup", "input", "update", "render"].forEach(ting => {
+                ["start", "inndata", "oppdater", "visuelt"].forEach(ting => {
                     for (const block of document.getElementById(ting).children){
                         for (const element of block.children){
                             if (element.tagName == "INPUT") element.style.borderColor = "blue";
@@ -418,7 +420,7 @@ function update_panel(inner)
 
             button.onmouseup = () =>{
                 variableSelelect = "";
-                ["setup", "input", "update", "render"].forEach(ting => {
+                ["start", "inndata", "oppdater", "visuelt"].forEach(ting => {
                     for (const block of document.getElementById(ting).children){
                         for (const element of block.children){
                             if (element.tagName == "INPUT") element.style.borderColor = "";
@@ -466,7 +468,7 @@ function update_panel(inner)
                             if (i == 0){
                                 let statement = document.createElement("input");
                                 statement.type = "text";
-                                statement.placeholder = "statement"
+                                statement.placeholder = "påstand"
 
                                 li.appendChild(statement);
                             } else addons.push("statement");
@@ -474,7 +476,7 @@ function update_panel(inner)
                             if (i == 0){
                                 let text = document.createElement("input");
                                 text.type = "text";
-                                text.placeholder = "text"
+                                text.placeholder = "tekst"
 
                                 li.appendChild(text);
                             } else addons.push("text");
@@ -482,7 +484,7 @@ function update_panel(inner)
                             if (i == 0){
                                 let variable = document.createElement("input");
                                 variable.type = "text";
-                                variable.placeholder = "name"
+                                variable.placeholder = "navn"
 
                                 li.appendChild(variable);
                             } else addons.push("variable");
@@ -491,7 +493,7 @@ function update_panel(inner)
                                 let selector = document.createElement("select")
                                 selector.name = "options";
 
-                                ["Space", "Arrow Up", "Arrow Down", "Arrow Left", "Arrow Right"].forEach(key =>{
+                                ["Mellomrom", "Pil Opp", "Pil Ned", "Pil Venstre", "Pil Høyre"].forEach(key =>{
                                     let option1 = document.createElement("option");
                                     option1.value = key;
                                     option1.textContent = key;
@@ -505,7 +507,7 @@ function update_panel(inner)
                                 let selector = document.createElement("select")
                                 selector.name = "options";
 
-                                ["Left", "Right", "Middle"].forEach(key =>{
+                                ["Venstre", "Høyre", "Midt"].forEach(key =>{
                                     let option1 = document.createElement("option");
                                     option1.value = key;
                                     option1.textContent = key;
@@ -521,7 +523,7 @@ function update_panel(inner)
 
                                 let defaultOpt = document.createElement("option");
                                 defaultOpt.value = "variable";
-                                defaultOpt.textContent = "variable";
+                                defaultOpt.textContent = "variabel";
                                 thevariable.appendChild(defaultOpt);
 
                                 Object.keys(variables).forEach(variable => {
@@ -540,10 +542,10 @@ function update_panel(inner)
 
                                 let defaultOpt = document.createElement("option");
                                 defaultOpt.value = "value";
-                                defaultOpt.textContent = "value";
+                                defaultOpt.textContent = "verdi";
                                 variablevalue.appendChild(defaultOpt);
 
-                                ["text", "number", "color"].forEach(valuetype => {
+                                ["tekst", "nummer", "farge"].forEach(valuetype => {
                                     let option = document.createElement("option");
                                     option.value = valuetype;
                                     option.textContent = valuetype;
@@ -562,7 +564,7 @@ function update_panel(inner)
         let button = document.createElement("button");
         button.innerHTML = message;
 
-        if (inner == "Math")
+        if (inner == "Matte")
         {
                 button.className = "short";
 
@@ -571,7 +573,7 @@ function update_panel(inner)
                         {
                             mathBlock = button.parentElement;
         
-                            ["setup", "input", "update", "render"].forEach(ting => {
+                            ["start", "inndata", "oppdater", "visuelt"].forEach(ting => {
                                 for (const block of document.getElementById(ting).children){
                                     for (const element of block.children){
                                         if (element.tagName == "INPUT" && element.type == "number") element.style.borderColor = "blue";
@@ -584,7 +586,7 @@ function update_panel(inner)
         
                             mathBlock = "";
         
-                            ["setup", "input", "update", "render"].forEach(ting => {
+                            ["start", "inndata", "oppdater", "visuelt"].forEach(ting => {
                                 for (const block of document.getElementById(ting).children){
                                     for (const element of block.children){
                                         if (element.tagName == "INPUT" && element.type == "number") element.style.borderColor = "";
@@ -597,7 +599,7 @@ function update_panel(inner)
                     button.onmousedown = () =>{
                         keyBlock = li;
             
-                        ["setup", "input", "update", "render"].forEach(ting => {
+                        ["start", "inndata", "oppdater", "visuelt"].forEach(ting => {
                             for (const block of document.getElementById(ting).children){
                                 for (const element of block.children){
                                     if (element.type == "tel") element.style.borderColor = "blue";
@@ -609,7 +611,7 @@ function update_panel(inner)
                     button.onmouseup = () =>{
                         keyBlock = "";
             
-                        ["setup", "input", "update", "render"].forEach(ting => {
+                        ["start", "inndata", "oppdater", "visuelt"].forEach(ting => {
                             for (const block of document.getElementById(ting).children){
                                 for (const element of block.children){
                                     if (element.type == "tel") element.style.borderColor = "";
@@ -620,15 +622,15 @@ function update_panel(inner)
                 }
         }
 
-        if (inner == "Input"){
-            if (button.innerHTML.search("Position") > 0){
+        if (inner == "Inndata"){
+            if (button.innerHTML.search("Posisjon") > 0){
                 button.className = "medium"
 
                 button.onmousedown = () =>
                 {
                     mathBlock = button.parentElement;
 
-                    ["setup", "input", "update", "render"].forEach(ting => {
+                    ["start", "inndata", "oppdater", "visuelt"].forEach(ting => {
                         for (const block of document.getElementById(ting).children){
                             for (const element of block.children){
                                 if (element.tagName == "INPUT" && element.type == "number") element.style.borderColor = "blue";
@@ -642,7 +644,7 @@ function update_panel(inner)
 
                     mathBlock = "";
 
-                    ["setup", "input", "update", "render"].forEach(ting => {
+                    ["start", "inndata", "oppdater", "visuelt"].forEach(ting => {
                         for (const block of document.getElementById(ting).children){
                             for (const element of block.children){
                                 if (element.tagName == "INPUT" && element.type == "number") element.style.borderColor = "";
@@ -666,9 +668,9 @@ function update_panel(inner)
             }
         }
 
-        if (inner == "Logic"){
+        if (inner == "Logikk"){
             button.className = "condition";
-            if (button.textContent != "Not " && button.textContent != "And " && button.textContent != "Or "){
+            if (button.textContent != "Ikke " && button.textContent != "Og " && button.textContent != "Eller "){
                 button.onmousedown = () => {
                     const copy = li.cloneNode(true);
     
@@ -721,7 +723,7 @@ function update_panel(inner)
             }
         }
 
-        if (inner == "Loops"){
+        if (inner == "Løkker"){
             button.className = "condition";
 
             button.onmousedown = () => {
@@ -765,7 +767,7 @@ function update_panel(inner)
             };
         }
         
-        if (inner == "Render"){
+        if (inner == "Visuellt"){
             button.onmousedown = () => {
                 const copy = li.cloneNode(true);
     
@@ -845,20 +847,20 @@ function update_panel(inner)
             } else if (addon == "statement"){
                 let statement = document.createElement("input");
                 statement.type = "tel";
-                statement.placeholder = "statement";
+                statement.placeholder = "påstand";
 
                 li.appendChild(statement);
             } else if (addon == "text"){
                 let text = document.createElement("input");
                 text.type = "text";
-                text.placeholder = "text";
+                text.placeholder = "tekst";
                 
 
                 li.appendChild(text);
             } else if (addon == "variable"){
                 let variable = document.createElement("input");
                 variable.type = "text";
-                variable.placeholder = "name";
+                variable.placeholder = "navn";
 
                 li.appendChild(variable);
             } else if (addon == "keycode"){
@@ -867,10 +869,10 @@ function update_panel(inner)
 
                 let option1 = document.createElement("option");
                 option1.value = "value";
-                option1.textContent = "value";
+                option1.textContent = "verdi";
                 selector.appendChild(option1);
 
-                ["Space", "Arrow Up", "Arrow Down", "Arrow Left", "Arrow Right"].forEach(key =>{
+                ["Mellomrom", "Pil Opp", "Pil Ned", "Pil Venstre", "Pil Høyre"].forEach(key =>{
                     let option1 = document.createElement("option");
                     option1.value = key;
                     option1.textContent = key;
@@ -884,10 +886,10 @@ function update_panel(inner)
 
                 let option1 = document.createElement("option");
                 option1.value = "value";
-                option1.textContent = "value";
+                option1.textContent = "verdi";
                 selector.appendChild(option1);
 
-                ["Left", "Right", "Middle"].forEach(key =>{
+                ["Venstre", "Høyre", "Midt"].forEach(key =>{
                     let option = document.createElement("option");
                     option.value = key;
                     option.textContent = key;
@@ -901,7 +903,7 @@ function update_panel(inner)
 
                 let defaultOpt = document.createElement("option");
                 defaultOpt.value = "variable";
-                defaultOpt.textContent = "variable";
+                defaultOpt.textContent = "variabel";
                 thevariable.appendChild(defaultOpt);
 
                 Object.keys(variables).forEach(variable => {
@@ -918,10 +920,10 @@ function update_panel(inner)
 
                 let defaultOpt = document.createElement("option");
                 defaultOpt.value = "value";
-                defaultOpt.textContent = "value";
+                defaultOpt.textContent = "verdi";
                 variablevalue.appendChild(defaultOpt);
 
-                ["text", "number", "color"].forEach(valuetype => {
+                ["tekst", "nummer", "farge"].forEach(valuetype => {
                     let option = document.createElement("option");
                     option.value = valuetype;
                     option.textContent = valuetype;

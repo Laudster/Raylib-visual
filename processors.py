@@ -1,5 +1,5 @@
 def setVariable(section, isInIfStatement, variables, codeblock, tabs):
-    if "Set variable" in codeblock:
+    if "Sett Variabel" in codeblock:
         if isInIfStatement: beguneIf = True
         splits = codeblock.split(":")[1].split(";")
         if splits[1] in variables:
