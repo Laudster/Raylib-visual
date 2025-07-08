@@ -612,13 +612,15 @@ def processCode(codeblocks, folder):
 
 @socket.on("build")
 def build(code):
-    if not os.path.exists(request.sid):
-        prosjekter[request.sid] = f"prosjekt{numProsjekter}"
-        numProsjekter += 1
-        os.mkdir(prosjekter[request.sid])
-        os.mkdir(f"{prosjekter[request.sid]}/web-build")
+    global prosjekter
+    global numProsjekter
 
-    processCode(code, request.sid)
+    prosjekter[request.sid] = f"prosjekt{numProsjekter}"
+    numProsjekter += 1
+    os.mkdir(prosjekter[request.sid])
+    os.mkdir(f"{prosjekter[request.sid]}/web-build")
+
+    processCode(code, prosjekter[request.sid])
 
     for file in os.listdir(f"{request.sid}/web-build"):
         if os.path.isfile(os.path.join(f"{prosjekter[request.sid]}/web-build", file)):
