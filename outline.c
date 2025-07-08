@@ -3,11 +3,11 @@
 #include <time.h>
 #include <string.h>
 
-Color defaultColour = {255, 255, 255, 255};
+Color bakgrunnFarge = {255, 255, 255, 255};
 
 int FPS = 60;
 
-char title[20] = "Game";
+char tittel[20] = "Game";
 
 int randint(int min, int max){return rand() % (max - min + 1);}
 
@@ -19,7 +19,7 @@ int main()
 
 
     SetTraceLogLevel(LOG_ERROR);
-    InitWindow(1920, 1080, title);
+    InitWindow(1920, 1080, tittel);
     InitAudioDevice();
     SetTargetFPS(FPS);
 
@@ -33,7 +33,7 @@ int main()
 
 
         BeginDrawing();
-            ClearBackground(defaultColour);
+            ClearBackground(bakgrunnFarge);
         EndDrawing();
     }
     

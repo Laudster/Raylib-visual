@@ -13,6 +13,9 @@ app.config["SECRET_KEY"] = "Hemmelig"
 
 socket = SocketIO(app)
 
+numProsjekter = 0
+prosjekter = {}
+
 @app.route("/")
 def start():
     return render_template("index.html")
@@ -23,7 +26,7 @@ def om():
  
 @app.route("/compilingcheck/<sid>")
 def compilingcheck(sid):
-    if os.path.isfile(f"{sid}/web-build/project.html"):
+    if os.path.isfile(f"{prosjekter[request.sid]}/web-build/project.html"):
         return "done"
     else:
         return "compiling"
@@ -32,13 +35,14 @@ def compilingcheck(sid):
 def getSetup():
     return send_file("static/setup.exe", as_attachment=True)
 
-def clean(folder):
+def clean(sid):
     sleep(1)
-    rmtree(folder)
+    rmtree(prosjekter[sid])
+    prosjekter.pop(sid)
 
 @app.route("/files/<sessid>")
 def file_download(sessid):
-    compiled_files = sessid+"/web-build"
+    compiled_files = prosjekter[request.sid]+"/web-build"
 
     print(compiled_files)
 
@@ -91,7 +95,7 @@ def processCode(codeblocks, folder):
                     
                     maxnum = ""
                     
-                    i = indeks + 4
+                    i = indeks + 2
                     while block[i] != ";":
                         maxnum += block[i]
                         i += 1
@@ -449,7 +453,7 @@ def processCode(codeblocks, folder):
                         else: argument += v
             
             if isInIfStatement == True:
-                renderCode += f"DrawCircle({splits[0]}, {splits[1]}, {splits[2]}, GetColor(0x{splits[4][1:len(splits[3])]}ff));"
+                renderCode += f"DrawCircle({splits[0]}, {splits[1]}, {splits[2]}, GetColor(0x{splits[3][1:len(splits[3])]}ff));"
             else:
                 renderCode += f"\n\t\t\tDrawCircle({splits[0]}, {splits[1]}, {splits[2]}, GetColor(0x{splits[3][1:len(splits[4])]}ff));"
         
@@ -609,18 +613,20 @@ def processCode(codeblocks, folder):
 @socket.on("build")
 def build(code):
     if not os.path.exists(request.sid):
-        os.mkdir(request.sid)
-        os.mkdir(f"{request.sid}/web-build")
+        prosjekter[request.sid] = f"prosjekt{numProsjekter}"
+        numProsjekter += 1
+        os.mkdir(prosjekter[request.sid])
+        os.mkdir(f"{prosjekter[request.sid]}/web-build")
 
     processCode(code, request.sid)
 
     for file in os.listdir(f"{request.sid}/web-build"):
-        if os.path.isfile(os.path.join(f"{request.sid}/web-build", file)):
-            os.remove(os.path.join(f"{request.sid}/web-build", file))
+        if os.path.isfile(os.path.join(f"{prosjekter[request.sid]}/web-build", file)):
+            os.remove(os.path.join(f"{prosjekter[request.sid]}/web-build", file))
 
-    Popen(r"./build.sh " + str(request.sid), shell=True)
+    Popen(r"./build.sh " + str(prosjekter[request.sid]), shell=True)
 
-    while not os.path.isfile(f"{request.sid}/web-build/project.html"):
+    while not os.path.isfile(f"{prosjekter[request.sid]}/web-build/project.html"):
         sleep(1)
 
     socket.emit("build-finnished", to=request.sid)
