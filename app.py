@@ -26,7 +26,7 @@ def om():
  
 @app.route("/compilingcheck/<sid>")
 def compilingcheck(sid):
-    if os.path.isfile(f"{prosjekter[request.sid]}/web-build/project.html"):
+    if os.path.isfile(f"{prosjekter[sid]}/web-build/project.html"):
         return "done"
     else:
         return "compiling"
@@ -42,7 +42,7 @@ def clean(sid):
 
 @app.route("/files/<sessid>")
 def file_download(sessid):
-    compiled_files = prosjekter[request.sid]+"/web-build"
+    compiled_files = prosjekter[sessid]+"/web-build"
 
     print(compiled_files)
 
