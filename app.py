@@ -138,7 +138,7 @@ def processCode(codeblocks, folder):
 
                 variables[name] = "number"
 
-        if "Hvis" in codeblock:
+        if "Hvis" in codeblock or "Om" in codeblock:
             isInIfStatement = True
             beguneIf = True
             if "Knapp Trykket" in codeblock:
@@ -220,7 +220,7 @@ def processCode(codeblocks, folder):
     
         inputCode, isInIfStatement = setVariable(inputCode, isInIfStatement, variables, codeblock, 2)
 
-        if "Hvis" in codeblock:
+        if "Hvis" in codeblock or "Om" in codeblock:
             isInIfStatement = True
             beguneIf = True
             if "Knapp Trykket" in codeblock:
@@ -310,7 +310,7 @@ def processCode(codeblocks, folder):
     
         updateCode, isInIfStatement = setVariable(updateCode, isInIfStatement, variables, codeblock, 2)
 
-        if "Hvis" in codeblock:
+        if "Hvis" in codeblock or "Om" in codeblock:
             isInIfStatement = True
             beguneIf = True
             if "Knapp Trykket" in codeblock:
@@ -527,7 +527,7 @@ def processCode(codeblocks, folder):
 
             renderCode += "\n\t\t\tfor (int thisvariablewillnevereverbeusedbyuser = 0; thisvariablewillnevereverbeusedbyuser <" + codeblock.split(":")[1].replace(" ", "") + " thisvariablewillnevereverbeusedbyuser++){"
 
-        if "Hvis" in codeblock:
+        if "Hvis" in codeblock or "Om" in codeblock:
             isInIfStatement = True
             beguneIf = True
             if "Knapp Trykket" in codeblock:
