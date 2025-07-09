@@ -1,13 +1,5 @@
 const socket = io.connect(window.location.origin);
 
-socket.on("connect", function(){
-    console.log("connected");
-});
-
-socket.on("disconnect", function(){
-    console.log("disconnected");
-});
-
 let codeSection = "";
 
 const codeblocks = {
@@ -32,7 +24,6 @@ function isHex(inputString)
 }
 
 function addtocode(copy){
-    console.log(codeSection);
     if (typeof(codeSection) !== "string"){
         let stillIfs = true;
         let sibling = codeSection.nextSibling;
@@ -62,7 +53,6 @@ function addtocode(copy){
         }
 
         if (sibling != null){
-            console.log(isLast);
             if (isLast == false) codeSection.parentElement.insertBefore(copy, sibling);
             else codeSection.parentElement.insertBefore(copy, sibling.nextSibling);
         }
@@ -292,8 +282,6 @@ function processCodeblocks()
 
         render.push(line);
     }
-
-    console.log({"setup": start, "input": input, "update": update, "render": render});
 
     return {"setup": start, "input": input, "update": update, "render": render};
 }
@@ -963,7 +951,6 @@ function build_project()
     socket.emit("build", processCodeblocks());
 
     socket.emit("getSessId", function(sessID){
-        console.log(sessID);
         window.open("raylibvisual://" + sessID, "_parent");
     });
 }
@@ -975,7 +962,6 @@ socket.on("build-finnished", function(){
 });
 
 socket.on("quit", function(){
-    console.log("remove");
     document.getElementById("display").querySelector("iframe").remove();
     document.getElementById("build").backgroundColor = "";
 });

@@ -18,26 +18,26 @@
 
         <p>
             Kodekloss er et visuelt programmeringsspråk som kan brukes til å lage små visuelle spill/applikasjoner.
-            Dette var et skole prosjekt jeg lagde på to uker, koden er for den grunn ikke særlig pen for den grunn, men jeg mener fortsatt at slutt produktet ble bra.
+            Dette var et skole prosjekt jeg lagde på to uker, koden er for den grunn ikke særlig pen for, men jeg mener fortsatt at slutt produktet ble bra.
             Jeg har derfor valgt å la det stå åpent her som en mulig lærringsressurs eller bare noe å ha morro med.
-            På grunn av veldig improvisatorisk utvikling er det utfordrende å skulle legge til lagring, men om det skulle være noe man skulle ønske kan jeg muligens se videre på det.
-            Jeg hadde heller ingen peiling på frameworks, derfor er dette bare en flask app med socketio og kun vanilla javascript.
+            Jeg lagde hele dette før jeg hadde fått noe erfaring med rammeverk, alt jeg viste kom fra nettressurser som w3schools, derfor er selve utviklingen gjort på et vis som døde ut for rundt 15 år siden.
+            På grunn av veldig improvisatorisk utvikling er det utfordrende å skulle legge til lagring av kode prosjekter, men om det skulle være noe man skulle ønsket kan jeg muligens se videre på det.
         </p>
 
         <h3> Tutorial </h3>
 
         <p>
             Som utvikler virker selvsagt arkitekturen helt åpenbar, men for andre ser jeg hvordan det kan oppstå forvirringer.
-            Dette er imidlertid ikke en introduksjon for grunnleggende programmering det kan du finne <a target="_blank" href="https://www.w3schools.com/programming/index.php>">her</a> om disse konseptene er helt nye for deg.
-            Om det da er forstått, så er dette nært sagt alt du trenger å vite for å programmere i Kodekloss:
+            Dette er imidlertid ikke en introduksjon for grunnleggende programmerings konsepter, det kan du finne <a target="_blank" href="https://www.w3schools.com/programming/index.php>">her</a> om disse konseptene er helt nye for deg.
+            Men så her er da hoved konseptene for hvordan du programmerer i Kodekloss:
             <ul>
                 <li>
-                    For å plassere klosser trykker du først på punktet i koden det skal være; setup om det går i start, render om det skal tenes på skjermen osv.
+                    For å plassere klosser trykker du først på punktet i koden det skal være; start om det går i start, visuelt om det skal vises visuelt på skjermen osv.
                     Deretter går du innpå panelet og finner klossen som trenges og trykker på den.
                 </li>
 
                 <li>
-                    For å plassere matte og variabel klosser drar du de ned på den tomme boksen den skal, fks dra posisjonX variabel for spilleren i posisjonX boksen for å tegne spilleren.
+                    Variabel, matte, og museposisjon sammen med og/eller klosser kan du dra over til de til tomme boksene som lyses opp når du begynner dra bevegelsen.
                 </li>
 
                 <li>
@@ -45,10 +45,20 @@
                 </li>
 
                 <li>
-                    Rekkefølgen i boksene som står tomme går: posisjonX, posisjonY, størrelseX, størrelseY, eneste untak er ved tekst hvor det bare er posisjonene og så font størrelse.
+                    Rekkefølgen i boksene som står tomme går: posisjonX, posisjonY, størrelseX, størrelseY, eneste untak er ved tekst hvor det er tekst, posisjonen og så font størrelse.
                 </li>
             </ul>
         </p>
+
+        <h2> Demonstrasjons video </h2>
+
+        <video controls width="320" height="240">
+            <source src="{{url_for("static", filename="Kodekloss.mp4")}}">
+        </video>
+
+        <h2> Kontakt </h2>
+
+        <p> Om det skulle være noe spesielt kan du kontakte meg på e-posten: amundlaudal@gmail.com </p>
     </div>
 </body>
 
