@@ -46,7 +46,7 @@ body
     background-color: rgb(217, 231, 231);
     padding: 1rem;
     width: 8rem;
-    height: 80vh;
+    height: 40rem;
 }
 
 .code_type
@@ -63,7 +63,7 @@ body
     background-color: rgb(226, 245, 245);
     width: 25rem;
     padding: 0.5rem;
-    height: 60vh;
+    height: 35rem;
 }
 
 #codeblocks
