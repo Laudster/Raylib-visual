@@ -346,29 +346,29 @@ def processCode(codeblocks, folder):
             isInIfStatement = False
             updateCode += "}"
 
-            if "Lag Variabel" in codeblock:
-                #Create variable: text;"test";"test text";
-                splits = codeblock.split(":")[1].split(";")
+        if "Lag Variabel" in codeblock:
+            #Create variable: text;"test";"test text";
+            splits = codeblock.split(":")[1].split(";")
 
-                if splits[0].replace(" ", "") == "tekst":
-                    name = splits[1].replace(" ", "")
-                    value = splits[2]
-                    updateCode += f"\n\tchar {name}[20] = \"{value}\";"
+            if splits[0].replace(" ", "") == "tekst":
+                name = splits[1].replace(" ", "")
+                value = splits[2]
+                updateCode += f"\n\tchar {name}[20] = \"{value}\";"
 
-                    variables[name] = "text"
-                
-                elif splits[0].replace(" ", "") == "farge":
-                    name = splits[1].replace(" ", "")
-                    value = splits[2]
-                    updateCode += f"\n\tColor {name} = GetColor(0x{value[1: len(value)]}ff);"
+                variables[name] = "text"
+            
+            elif splits[0].replace(" ", "") == "farge":
+                name = splits[1].replace(" ", "")
+                value = splits[2]
+                updateCode += f"\n\tColor {name} = GetColor(0x{value[1: len(value)]}ff);"
 
-                    variables[name] = "color"
-                elif splits[0].replace(" ", "") == "nummer":
-                    name = splits[1].replace(" ", "")
-                    value = splits[2]
-                    updateCode += f"\n\tint {name} = {value};"
+                variables[name] = "color"
+            elif splits[0].replace(" ", "") == "nummer":
+                name = splits[1].replace(" ", "")
+                value = splits[2]
+                updateCode += f"\n\tint {name} = {value};"
 
-                    variables[name] = "number"
+                variables[name] = "number"
     
         updateCode, isInIfStatement = setVariable(updateCode, isInIfStatement, variables, codeblock, 2)
 
