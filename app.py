@@ -154,7 +154,13 @@ def processCode(codeblocks, folder):
                 if "Pil Venstre" in codeblock: key = "KEY_LEFT"
                 if "Pil Høyre" in codeblock: key = "KEY_RIGHT"
 
-                setupCode += "\n\t\tif (IsKeyDown("+ key + ")){"
+                value = ""
+                ekstra = codeblock.split(":")[2]
+
+                for i in range(1, len(ekstra)):
+                    value += ekstra[i].replace("Og", "&&").replace("Ikke", "!").replace("Eller", "||")
+
+                setupCode += "\n\t\tif (IsKeyDown("+ key + ") " + value + "){"
 
             if "==" in codeblock or "<" in codeblock or ">" in codeblock or "!=" in codeblock:
                 #'If: Not 0;== 1;
@@ -220,7 +226,6 @@ def processCode(codeblocks, folder):
         if not "tab" in codeblock and isInIfStatement == True and beguneIf == True:
             isInIfStatement = False
             inputCode += "}"
-            print(codeblock)
     
         inputCode, isInIfStatement = setVariable(inputCode, isInIfStatement, variables, codeblock, 2)
 
@@ -236,7 +241,13 @@ def processCode(codeblocks, folder):
                 if "Pil Venstre" in codeblock: key = "KEY_LEFT"
                 if "Pil Høyre" in codeblock: key = "KEY_RIGHT"
 
-                inputCode += "\n\t\tif (IsKeyDown("+ key + ")){"
+                value = ""
+                ekstra = codeblock.split(":")[2]
+
+                for i in range(1, len(ekstra)):
+                    value += ekstra[i].replace("Og", "&&").replace("Ikke", "!").replace("Eller", "||")
+
+                inputCode += "\n\t\tif (IsKeyDown("+ key + ") " + value + "){"
             
             if "Museknapp Nede" in codeblock:
                 if "Venstre" in codeblock: key = "MOUSE_BUTTON_LEFT"
@@ -310,7 +321,6 @@ def processCode(codeblocks, folder):
         if not "tab" in codeblock and isInIfStatement == True and beguneIf == True:
             isInIfStatement = False
             updateCode += "}"
-            print(codeblock)
     
         updateCode, isInIfStatement = setVariable(updateCode, isInIfStatement, variables, codeblock, 2)
 
@@ -326,7 +336,13 @@ def processCode(codeblocks, folder):
                 if "Pil Venstre" in codeblock: key = "KEY_LEFT"
                 if "Pil Høyre" in codeblock: key = "KEY_RIGHT"
 
-                updateCode += "\n\t\tif (IsKeyDown("+ key + ")){"
+                value = ""
+                ekstra = codeblock.split(":")[2]
+
+                for i in range(1, len(ekstra)):
+                    value += ekstra[i].replace("Og", "&&").replace("Ikke", "!").replace("Eller", "||")
+
+                updateCode += "\n\t\tif (IsKeyDown("+ key + ") " + value + "){"
             
             if "Museknapp Nede" in codeblock:
                 if "Venstre" in codeblock: key = "MOUSE_BUTTON_LEFT"
@@ -398,12 +414,10 @@ def processCode(codeblocks, folder):
         if not "tab" in codeblock and isInIfStatement == True and beguneIf == True:
             isInIfStatement = False
             renderCode += "}"
-            print(codeblock)
 
         renderCode, isInIfStatement = setVariable(renderCode, isInIfStatement, variables, codeblock, 3)
 
         if "Tegn Firkant" in codeblock:
-            print(codeblock)
             splits = codeblock.split(": ")[1].split(";")
             value = []
             argument = ""
@@ -480,8 +494,6 @@ def processCode(codeblocks, folder):
                                 value.append(v)
                         else: argument += v
 
-            print(splits[0])
-            print(variables)
             if splits[0] in variables:
                 if variables[splits[0]] == "number":
                     value = f'TextFormat("%i", {splits[0]})'
@@ -543,7 +555,13 @@ def processCode(codeblocks, folder):
                 if "Pil Venstre" in codeblock: key = "KEY_LEFT"
                 if "Pil Høyre" in codeblock: key = "KEY_RIGHT"
 
-                renderCode += "\n\t\tif (IsKeyDown("+ key + ")){"
+                value = ""
+                ekstra = codeblock.split(":")[2]
+
+                for i in range(1, len(ekstra)):
+                    value += ekstra[i].replace("Og", "&&").replace("Ikke", "!").replace("Eller", "||")
+
+                renderCode += "\n\t\tif (IsKeyDown("+ key + ") " + value + "){"
 
             if "==" in codeblock or "<" in codeblock or ">" in codeblock or "!=" in codeblock:
                 #'If: Not 0;== 1;
