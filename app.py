@@ -137,7 +137,9 @@ def processCode(codeblocks, folder):
                 variables[name] = "color"
             elif splits[0].replace(" ", "") == "nummer":
                 name = splits[1].replace(" ", "")
-                value = splits[2]
+                value = ""
+                for i in range(2, len(splits)):
+                    value += splits[i]
                 setupCode += f"\n\tint {name} = {value};"
 
                 variables[name] = "number"
@@ -248,7 +250,9 @@ def processCode(codeblocks, folder):
                 variables[name] = "color"
             elif splits[0].replace(" ", "") == "nummer":
                 name = splits[1].replace(" ", "")
-                value = splits[2]
+                value = ""
+                for i in range(2, len(splits)):
+                    value += splits[i]
                 inputCode += f"\n\tint {name} = {value};"
 
                 variables[name] = "number"
@@ -365,7 +369,11 @@ def processCode(codeblocks, folder):
                 variables[name] = "color"
             elif splits[0].replace(" ", "") == "nummer":
                 name = splits[1].replace(" ", "")
-                value = splits[2]
+
+                value = ""
+                for i in range(2, len(splits)):
+                    value += splits[i]
+
                 updateCode += f"\n\tint {name} = {value};"
 
                 variables[name] = "number"
