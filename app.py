@@ -155,7 +155,7 @@ def processCode(codeblocks, folder):
                 if "Pil Høyre" in codeblock: key = "KEY_RIGHT"
 
                 value = ""
-                ekstra = codeblock.split(":")[2]
+                ekstra = codeblock.split(":")[2].split(";")
 
                 for i in range(1, len(ekstra)):
                     value += ekstra[i].replace("Og", "&&").replace("Ikke", "!").replace("Eller", "||")
@@ -242,7 +242,7 @@ def processCode(codeblocks, folder):
                 if "Pil Høyre" in codeblock: key = "KEY_RIGHT"
 
                 value = ""
-                ekstra = codeblock.split(":")[2]
+                ekstra = codeblock.split(":")[2].split(";")
 
                 for i in range(1, len(ekstra)):
                     value += ekstra[i].replace("Og", "&&").replace("Ikke", "!").replace("Eller", "||")
@@ -337,7 +337,7 @@ def processCode(codeblocks, folder):
                 if "Pil Høyre" in codeblock: key = "KEY_RIGHT"
 
                 value = ""
-                ekstra = codeblock.split(":")[2]
+                ekstra = codeblock.split(":")[2].split(";")
 
                 for i in range(1, len(ekstra)):
                     value += ekstra[i].replace("Og", "&&").replace("Ikke", "!").replace("Eller", "||")
@@ -556,7 +556,7 @@ def processCode(codeblocks, folder):
                 if "Pil Høyre" in codeblock: key = "KEY_RIGHT"
 
                 value = ""
-                ekstra = codeblock.split(":")[2]
+                ekstra = codeblock.split(":")[2].split(";")
 
                 for i in range(1, len(ekstra)):
                     value += ekstra[i].replace("Og", "&&").replace("Ikke", "!").replace("Eller", "||")
