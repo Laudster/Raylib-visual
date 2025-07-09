@@ -455,7 +455,7 @@ def processCode(codeblocks, folder):
             if isInIfStatement == True:
                 renderCode += f"DrawCircle({splits[0]}, {splits[1]}, {splits[2]}, GetColor(0x{splits[3][1:len(splits[3])]}ff));"
             else:
-                renderCode += f"\n\t\t\tDrawCircle({splits[0]}, {splits[1]}, {splits[2]}, GetColor(0x{splits[3][1:len(splits[4])]}ff));"
+                renderCode += f"\n\t\t\tDrawCircle({splits[0]}, {splits[1]}, {splits[2]}, GetColor(0x{splits[3][1:len(splits[3])]}ff));"
         
         if "Skriv Tekst" in codeblock:
             #Draw Text: 0 0 0 0 #000000 
